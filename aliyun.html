@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="manifest" href="/manifest.json?v=2.1.1">
+  <link rel="icon" href="/assets/icons/icon-16x16.png?v=2.1.1" type="image/png" sizes="16x16">
+  <link rel="icon" href="/assets/icons/icon-32x32.png?v=2.1.1" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png?v=2.1.1" sizes="180x180">
+  <link rel="mask-icon" href="/assets/icons/safari-pinned-tab.svg?v=2.1.1" color="#54bcff">
+  <meta name="msapplication-TileImage" content="/assets/icons/icon-144x144.png">
+  <meta name="msapplication-TileColor" content="#000000">
+  <meta name="google-site-verification" content="_dxRdKposlAngL4xRoCTrJu0sZ7Pp_RhlBF9inxcD5w">
+  <meta name="msvalidate.01" content="6A508F795A82FADAC671AFCB9848929F">
+  <meta name="baidu-site-verification" content="UYjZUCoORR">
+  <meta name="360-site-verification" content="b926bfcb0e6034f32ac4700700a812f5">
+  <meta name="sogou_site_verification" content="hbRL4tRKAg">
+  <meta name="description"
+    content="2019 年，我在 Github 上开源了自己的第一个开源项目 hexo-theme-stun，它是一个基于 Hexo 框架的博客主题。值得庆幸的是，在维护期间，有许多 Github 用户为这个项目贡献了 Pull Request。">
+  <meta name="keywords" content="Github,Git,Pull Request">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="优雅地修改他人贡献的 Pull Request">
+  <meta property="og:url" content="https://liuyib.github.io/2020/09/19/add-commits-to-others-pr/">
+  <meta property="og:site_name" content="wuju&#39;s Blog">
+  <meta property="og:description"
+    content="2019 年，我在 Github 上开源了自己的第一个开源项目 hexo-theme-stun，它是一个基于 Hexo 框架的博客主题。值得庆幸的是，在维护期间，有许多 Github 用户为这个项目贡献了 Pull Request。">
+  <meta property="og:locale" content="zh-CN">
+  <meta property="og:image"
+    content="https://liuyib.github.io/assets/posts/add-commits-to-others-pr/pr-meta-info-branch.png">
+  <meta property="og:image"
+    content="https://liuyib.github.io/assets/posts/add-commits-to-others-pr/add-commit-to-others-pr.png">
+  <meta property="og:image"
+    content="https://liuyib.github.io/assets/posts/add-commits-to-others-pr/vscode-built-in-git-ui.png">
+  <meta property="og:image"
+    content="https://liuyib.github.io/assets/posts/add-commits-to-others-pr/vscode-plugins-gitlens-add-remote.png">
+  <meta property="og:image"
+    content="https://liuyib.github.io/assets/posts/add-commits-to-others-pr/vscode-plugins-gitlens-fetch-others.png">
+  <meta property="og:image"
+    content="https://liuyib.github.io/assets/posts/add-commits-to-others-pr/vscode-plugins-gitlens-switch-branch-to-others.png">
+  <meta property="og:image"
+    content="https://liuyib.github.io/assets/posts/add-commits-to-others-pr/vscode-built-in-git-ui-add-commit.png">
+  <meta property="og:image"
+    content="https://liuyib.github.io/assets/posts/add-commits-to-others-pr/vscode-plugins-gitlens-push.png">
+  <meta property="og:image"
+    content="https://liuyib.github.io/assets/posts/add-commits-to-others-pr/github-pr-files-changed-edit-file.png">
+  <meta property="og:updated_time" content="2020-10-04T08:35:34.861Z">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:image"
+    content="https://liuyib.github.io/assets/posts/add-commits-to-others-pr/pr-meta-info-branch.png">
+  <title>阿里云服务器配置 | wuju's Blog</title>
+  <link ref="canonical" href="https://liuyib.github.io/2020/09/19/add-commits-to-others-pr/">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml">
+  <link rel="stylesheet" href="static1/css/all.min.css" type="text/css">
+  <link rel="stylesheet" href="static1/css/index.css">
+  <script src="static1/js/adsbygoogle.js" data-ad-client="ca-pub-2577876740331235" async="" data-pjax=""></script>
+  <script src="static/js/791ae5aab4364aa389598c7e63e34664.js" async="" data-pjax=""></script>
+  <script data-pjax="">if (window.location.hostname !== 'localhost') {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-146413033-1');
+    }</script>
+  <script>var _hmt = _hmt || [];
+    (function () {
+      var hm = document.createElement('script');
+      hm.src = 'https://hm.baidu.com/hm.js?2be584e2ddc153d81489b57ba106c8c0';
+      hm.async = true;
+
+      if (true) {
+        hm.setAttribute('data-pjax', '');
+      }
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(hm, s);
+    })();</script>
+  <script>(function () {
+      var hm = document.createElement('script');
+      hm.src = 'https://tajs.qq.com/stats?sId=66465986';
+      hm.async = true;
+
+      if (true) {
+        hm.setAttribute('data-pjax', '');
+      }
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(hm, s);
+    })();</script>
+  <script>var Stun = window.Stun || {};
+    var CONFIG = {
+      root: '/',
+      algolia: undefined,
+      fontIcon: { "prompt": { "success": "fas fa-check-circle", "info": "fas fa-arrow-circle-right", "warning": "fas fa-exclamation-circle", "error": "fas fa-times-circle" }, "copyBtn": "fas fa-copy" },
+      sidebar: { "offsetTop": "20px", "tocMaxDepth": 4 },
+      header: { "enable": true, "showOnPost": true, "scrollDownIcon": true },
+      postWidget: { "endText": true },
+      nightMode: { "enable": true },
+      back2top: { "enable": true },
+      codeblock: { "style": "carbon", "highlight": "light", "wordWrap": false },
+      reward: true,
+      fancybox: false,
+      zoomImage: { "gapAside": "20px" },
+      galleryWaterfall: { "colWidth": "220px", "gapX": "10px" },
+      lazyload: true,
+      pjax: { "avoidBanner": true },
+      externalLink: { "icon": { "enable": true, "name": "fas fa-external-link-alt" } },
+      shortcuts: { "switchPost": true },
+      prompt: { "copyButton": "复制", "copySuccess": "复制成功", "copyError": "复制失败" },
+      sourcePath: { "js": "js", "css": "css", "images": "images" },
+    };
+
+    window.CONFIG = CONFIG;</script>
+  <style>
+    .black {
+      background-color: black;
+      color: white;
+      font-size: 13px;
+    }
+
+    .red {
+      color: red;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container" id="container">
+    <header class="header" id="header">
+      <div class="header-inner">
+        <nav class="header-nav header-nav--fixed">
+          <div class="header-nav-inner">
+            <div class="header-nav-menubtn"><i class="fas fa-bars"></i></div>
+            <div class="header-nav-menu">
+              <div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/"><span
+                    class="header-nav-menu-item__icon"><i class="fas fa-home"></i></span><span
+                    class="header-nav-menu-item__text">首页</span></a></div>
+              <div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="javascript:;"
+                  onclick="return false;"><span class="header-nav-menu-item__icon"><i
+                      class="fas fa-feather-alt"></i></span><span class="header-nav-menu-item__text">文章</span></a>
+                <div class="header-nav-submenu">
+                  <div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/archives/"><span
+                        class="header-nav-submenu-item__icon"><i class="fas fa-folder-open"></i></span><span
+                        class="header-nav-submenu-item__text">归档</span></a></div>
+                  <div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link"
+                      href="/categories/"><span class="header-nav-submenu-item__icon"><i
+                          class="fas fa-layer-group"></i></span><span
+                        class="header-nav-submenu-item__text">分类</span></a></div>
+                  <div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/tags/"><span
+                        class="header-nav-submenu-item__icon"><i class="fas fa-tags"></i></span><span
+                        class="header-nav-submenu-item__text">标签</span></a></div>
+                </div>
+              </div>
+              <div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="javascript:;"
+                  onclick="return false;"><span class="header-nav-menu-item__icon"><i
+                      class="fas fa-flask"></i></span><span class="header-nav-menu-item__text">实验室</span></a>
+                <div class="header-nav-submenu">
+                  <div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link"
+                      href="https://github.com/liuyib/hexo-theme-stun" target="_blank" rel="noopener"><span
+                        class="header-nav-submenu-item__text">🦄 Stun</span></a></div>
+                </div>
+              </div>
+              <div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="javascript:;"
+                  onclick="return false;"><span class="header-nav-menu-item__icon"><i
+                      class="fas fa-fingerprint"></i></span><span class="header-nav-menu-item__text">关于</span></a>
+                <div class="header-nav-submenu">
+                  <div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/about/"><span
+                        class="header-nav-submenu-item__icon"><i class="fas fa-user"></i></span><span
+                        class="header-nav-submenu-item__text">作者</span></a></div>
+                  <div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/reprint/"><span
+                        class="header-nav-submenu-item__icon"><i class="fas fa-reply"></i></span><span
+                        class="header-nav-submenu-item__text">转载</span></a></div>
+                </div>
+              </div>
+              <div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="javascript:;"
+                  onclick="return false;"><span class="header-nav-menu-item__icon"><i
+                      class="fas fa-angle-double-down"></i></span><span class="header-nav-menu-item__text">其他</span></a>
+                <div class="header-nav-submenu">
+                  <div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/gallery/"><span
+                        class="header-nav-submenu-item__icon"><i class="fas fa-images"></i></span><span
+                        class="header-nav-submenu-item__text">相册</span></a></div>
+                  <div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/friends/"><span
+                        class="header-nav-submenu-item__icon"><i class="fas fa-hand-spock"></i></span><span
+                        class="header-nav-submenu-item__text">友链</span></a></div>
+                </div>
+              </div>
+            </div>
+            <div class="header-nav-search"><span class="header-nav-search__icon"><i
+                  class="fas fa-search"></i></span><span class="header-nav-search__text">搜索</span></div>
+            <div class="header-nav-mode">
+              <div class="mode">
+                <div class="mode-track"><span class="mode-track-moon"></span><span class="mode-track-sun"></span></div>
+                <div class="mode-thumb"></div>
+              </div>
+            </div>
+          </div>
+        </nav>
+        <div class="header-banner"
+          style="background: url(static/images/add-commits-to-others-pr.png) no-repeat center/cover;">
+          <div class="header-banner-info">
+            <div class="header-banner-info__title">wuju's Blog</div>
+            <div class="header-banner-info__subtitle">write code and love life</div>
+          </div>
+          <div class="header-banner-arrow">
+            <div class="header-banner-arrow__icon"><i class="fas fa-angle-down"></i></div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main class="main" id="main">
+      <div class="main-inner">
+        <div class="content-wrap" id="content-wrap">
+          <div class="content" id="content">
+            <!-- Just used to judge whether it is an article page-->
+            <div id="is-post"></div>
+            <div class="post">
+              <header class="post-header">
+                <h1 class="post-title">阿里云服务器配置</h1>
+                <div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span
+                      class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span
+                      class="post-meta-item__info">发表于</span><span
+                      class="post-meta-item__value">2020-10-21</span></span><span
+                    class="post-meta-item post-meta-item--updatetime"><span class="post-meta-item__icon"><i
+                        class="far fa-calendar-check"></i></span><span class="post-meta-item__info">更新于</span><span
+                      class="post-meta-item__value">2020-10-21</span></span><span
+                    class="post-meta-item post-meta-item--wordcount"><span class="post-meta-item__icon"><i
+                        class="far fa-file-word"></i></span><span class="post-meta-item__info">字数统计</span><span
+                      class="post-meta-item__value">2.2k</span></span><span
+                    class="post-meta-item post-meta-item--readtime"><span class="post-meta-item__icon"><i
+                        class="far fa-clock"></i></span><span class="post-meta-item__info">阅读时长</span><span
+                      class="post-meta-item__value">30分</span></span><span
+                    class="post-meta-item post-meta-item--visitors"><span class="post-meta-item__icon"><i
+                        class="fas fa-eye"></i></span><span class="post-meta-item__info">阅读次数</span><span
+                      class="post-meta-item__value" id="busuanzi_value_page_pv"></span></span></div>
+              </header>
+              <div class="post-body">
+
+
+                <p>本文主要致力于阿里云服务器环境安装与配置<br>
+                阿里云服务器：centos7 <br>
+                工具：Xshell、filezilia
+                </p>
+
+                <blockquote>
+                  <p>下文进行详细介绍</p>
+                </blockquote>
+
+                <h2 id="卸载jdk">
+                  <a href="#卸载jdk" class="heading-link"><i class="fas fa-link"></i></a>卸载jdk</h2>
+                <h4>1.查看jdk是否安装</h4>
+                <p class="black">
+                  [root@izbp184fbrxa15bxowm0tgz bin]# java -version <br>
+                  [root@izbp184fbrxa15bxowm0tgz bin]# java <br>
+                  [root@izbp184fbrxa15bxowm0tgz bin]# javac <br>
+                </p> 当显示版本号或其它相关内容时，说明已经安装了jdk
+                <h4>2.查看jdk的安装路径</h4>
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz bin]# which java <br>
+                  /usr/bin/java</p>
+                <h4>3.卸载jdk</h4>
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz bin]# rm -rf /usr/bin/java</p>
+                <h4>4.判断jdk是否卸载干净</h4>
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz bin]# java -version<br>
+                  -bash: /usr/bin/java: No such file or directory<br>
+                  [root@izbp184fbrxa15bxowm0tgz bin]# java<br>
+                  -bash: /usr/bin/java: No such file or directory<br>
+                  [root@izbp184fbrxa15bxowm0tgz bin]# javac<br>
+                  Usage: javac <options>
+                    <source files><br>
+                    where possible options include:<br>
+                    -g Generate all debugging info<br>
+                    -g:none Generate no debugging info<br>
+                    -g:{lines,vars,source} Generate only some debugging info<br>
+                    -nowarn Generate no warnings<br>
+                    -verbose Output messages about what the compiler is doing<br>
+                    ...
+                </p>
+                可见jdk未卸载干净
+                <h4>5.查询</h4>
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz bin]# rpm -qa|grep jdk <br>
+                  jdk-1.7.0_80-fcs.x86_64</p>
+                <h4>6.删除</h4>
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz bin]# rpm -e `rpm -qa|grep jdk`</p>
+                <h4>7.再次测试jdk是否卸载干净</h4>
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz bin]# rpm -qa|grep jdk <br>
+                  [root@izbp184fbrxa15bxowm0tgz bin]# javac<br>
+                  -bash: /usr/bin/javac: No such file or directory<br>
+                </p>
+                可见已经卸载干净了<br>
+                若之前设置过环境变量且准备更换jdk安装路径，需要通过vim /etc/profile 删除之前配置的环境变量
+
+
+                <h2 id="安装jdk">
+                  <a href="#安装jdk" class="heading-link"><i class="fas fa-link"></i></a>安装jdk</h2>
+                <h4>1.新建java目录</h4>
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz ~]# mkdir /usr/local/java</p>
+                <h4>2.上传jdk压缩包</h4>
+                通过filezilla将jdk1.8安装包上传到/usr/local/java目录下
+                <h4>3.将jdk解压到当前目录下</h4>
+                先进入到java目录下，再进行解压
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz ~]# cd /usr/local/java <br>
+                  [root@izbp184fbrxa15bxowm0tgz java]# tar -zxvf jdk-8u11-linux-x64.tar.gz <br>
+                </p>
+                可使用tab键自动补全 <br>
+                通过ll命令查看解压后的文件
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz java]# ll <br>
+                  total 155300<br>
+                  drwxr-xr-x 8 10 143 4096 Jun 17 2014 jdk1.8.0_11<br>
+                  -rw-r--r-- 1 root root 159019376 Oct 19 18:24 jdk-8u11-linux-x64.tar.gz<br>
+                </p>
+                删除压缩包
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz java]# rm -f jdk-8u11-linux-x64.tar.gz <br>
+                  [root@izbp184fbrxa15bxowm0tgz java]# ll<br>
+                  total 4<br>
+                  drwxr-xr-x 8 10 143 4096 Jun 17 2014 jdk1.8.0_11<br>
+                </p>
+                <h4>4.复制jdk的路径</h4>
+                进入解压后的jdk文件下，通过pwd命令，右键复制路径：/usr/local/java/jdk1.8.0_11
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz java]# cd jdk1.8.0_11/ <br>
+                  [root@izbp184fbrxa15bxowm0tgz jdk1.8.0_11]# pwd<br>
+                  /usr/local/java/jdk1.8.0_11
+                </p>
+                <h4>5.配置环境变量</h4>
+                进入配置文件
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz jdk1.8.0_11]# vim /etc/profile
+                </p>
+                将光标移动到最底部，按i键进行编辑，添加环境变量
+                <img src="aliyun/Snipaste_2020-10-19_18-52-33.png" alt="">
+                <p class="black">#set java environment <br>
+                  JAVA_HOME=/usr/local/java/jdk1.8.0_11<br>
+                  CLASSPATH=.:$JAVA_HOME/lib.tools.jar<br>
+                  PATH=$JAVA_HOME/bin:$PATH<br>
+                  export JAVA_HOME CLASSPATH PATH
+                </p>
+                再按esc键冒号接wq退出编辑<br>
+                加载环境变量：
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz jdk1.8.0_11]# source /etc/profile</p>
+                <h4>6.测试jdk是否配置成功</h4>
+                java --version<br>
+                java<br>
+                javac<br>
+
+                <h2 id="tomcat安装与测试">
+                  <a href="#tomcat安装与测试" class="heading-link"><i class="fas fa-link"></i></a>tomcat安装与测试</h2>
+
+                <h4 id="安装tomcat">
+                  <a href="#安装tomcat" class="heading-link"><i class="fas fa-link"></i></a>安装tomcat</h4>
+
+                1.通过命令检查是否安装过tomcat
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz jdk1.8.0_11]# rpm -qa|grep tomcat</p>
+                2.上传tomcat并解压
+                通过filezilla将tomcat压缩包上传到/usr/local目录下，进入该目录下可以查看已上传的压缩包
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz java]# cd /usr/local <br>
+                  [root@izbp184fbrxa15bxowm0tgz local]# ll <br>
+                  ...#隐藏其它文件<br>
+                  -rw-r--r-- 1 root root 9417189 Oct 19 19:13 apache-tomcat-8.0.50.tar.gz<br>
+                  ...#隐藏其它文件<br>
+                </p>
+                解压
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz local]# tar -zxvf apache-tomcat-8.0.50.tar.gz</p>
+                删除压缩包
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz local]# rm -f apache-tomcat-8.0.50.tar.gz</p>
+                3.启动tomcat <br>
+                进入tomcat的bin目录
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz local]# cd apache-tomcat-8.0.50/bin</p>
+                启动tomcat
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz bin]# ./startup.sh <br>
+                </p>
+                有下图所示，说明启动成功
+                <img src="aliyun/start.png" alt="">
+                <h2 id="卸载tomcat">
+                  <a href="#卸载tomcat" class="heading-link"><i class="fas fa-link"></i></a>卸载tomcat</h2>
+                配置完java、tomcat和nginx后上传html文件无法访问，我就怀疑是不是安装出错了，就想卸载tomcat重装，
+                但最后发现不是tomcat的问题，卸载方式如下：<br>
+
+                在linux中卸载tomcat没有注册表之类的限制，直接删除tomcat的安装包就可以了 <br>
+                我的tomcat安装位置为/usr/local/文件夹下 <br>
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz ~]# cd /usr/local <br>
+                  [root@izbp184fbrxa15bxowm0tgz local]# rm -rf apache-tomcat-8.0.50/</p>
+                <h2 id="搭建fastDFS">
+                  <a href="#搭建fastDFS" class="heading-link"><i class="fas fa-link"></i></a>搭建fastDFS</h2>
+
+                <h4 id="安装依赖环境">
+                  <a href="#安装依赖环境" class="heading-link"><i class="fas fa-link"></i></a>1.安装依赖环境</h4>
+
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz ~]# yum -y install libevent</p>
+                <h4 id="上传压缩包并解压">
+                  <a href="#上传压缩包并解压" class="heading-link"><i class="fas fa-link"></i></a>2.上传压缩包并解压</h4>
+                通过filezilla上传安装包到服务器/home/soft/fastDFS文件夹下，通过命令进入该目录
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz ~]# cd /home/soft/fastDFS <br>
+                  [root@izbp184fbrxa15bxowm0tgz fastDFS]# ll<br>
+                  total 424<br>
+                  -rw-r--r-- 1 root root 336001 Oct 19 20:59 fastdfs-5.05.tar.gz<br>
+                  -rw-r--r-- 1 root root 17510 Oct 19 20:59 fastdfs-nginx-module_v1.16.tar.gz<br>
+                  -rw-r--r-- 1 root root 73148 Oct 19 21:00 libfastcommon-1.0.7.tar.gz
+                </p>
+                解压
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz fastDFS]# tar -zxvf fastdfs-5.05.tar.gz</p>
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz fastDFS]# tar -zxvf fastdfs-nginx-module_v1.16.tar.gz</p>
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz fastDFS]# tar -zxvf libfastcommon-1.0.7.tar.gz</p>
+                <h4 id="libfastcommon-1.0.7">
+                  <a href="#libfastcommon-1.0.7" class="heading-link"><i
+                      class="fas fa-link"></i></a>3.libfastcommon-1.0.7</h4>
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz fastDFS]# cd libfastcommon-1.0.7<br>
+                  [root@izbp184fbrxa15bxowm0tgz libfastcommon-1.0.7]# ll<br>
+                  total 24<br>
+                  -rw-rw-r-- 1 root root 2170 Sep 16 2014 HISTORY<br>
+                  -rw-rw-r-- 1 root root 582 Sep 16 2014 INSTALL<br>
+                  -rw-rw-r-- 1 root root 1341 Sep 16 2014 libfastcommon.spec<br>
+                  -rwxrwxr-x 1 root root 2151 Sep 16 2014 make.sh<br>
+                  -rw-rw-r-- 1 root root 617 Sep 16 2014 README<br>
+                  drwxrwxr-x 2 root root 4096 Sep 16 2014 src<br>
+                  [root@izbp184fbrxa15bxowm0tgz libfastcommon-1.0.7]#</p>
+                其中make.sh是用来编译的，直接执行可能会出错，需要安装依赖文件
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz libfastcommon-1.0.7]# yum install gcc-c++
+                </p>
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz libfastcommon-1.0.7]# yum install pcre pcre-devel
+                </p>
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz libfastcommon-1.0.7]# yum install zlib zlib-devel
+                </p>
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz libfastcommon-1.0.7]# yum -y install openssl
+                  openssl-devel
+                </p>
+                编译
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz libfastcommon-1.0.7]# ./make.sh
+                </p>
+                安装
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz libfastcommon-1.0.7]# ./make.sh install
+                </p>
+                此时已经被安装在了/usr/lib64目录下
+                <img src="aliyun/Snipaste_2020-10-19_21-44-01.png" alt="">
+                进入这个文件夹，并<span class="red">过滤libfast文件</span>
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz lib64]# cd /usr/lib64 <br>
+                  [root@izbp184fbrxa15bxowm0tgz lib64]# ll libfast* <br>
+                  -rwxr-xr-x 1 root root 281240 Oct 19 21:43 libfastcommon.so
+                </p>
+                将libfastcommon.so移动到/usr/lib目录下
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz lib64]# cp libfastcommon.so /usr/lib</p>
+                <h4 id="fastdfs-5.05">
+                  <a href="#fastdfs-5.05" class="heading-link"><i class="fas fa-link"></i></a>4.fastdfs-5.05</h4>
+                进入fastdfs-5.05目录下
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz fastDFS]# cd /home/soft/fastDFS/fastdfs-5.05</p>
+                <img src="aliyun/Snipaste_2020-10-19_22-05-30.png" alt="">
+                编译
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz fastdfs-5.05]# ./make.sh</p>
+                安装
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz fastdfs-5.05]# ./make.sh install</p>
+                此时在/usr/bin和/etc/fdfs中添加了以fastdfs为前缀的文件
+                <img src="aliyun/Snipaste_2020-10-19_22-12-25.png" alt="">
+                <img src="aliyun/Snipaste_2020-10-19_22-14-57.png" alt="">
+                将/home/soft/fastDFS/fastdfs-5.05/conf目录下的文件全部拷贝到/etc/fdfs目录下
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz fdfs]# cd /home/soft/fastDFS/fastdfs-5.05/conf
+                </p>
+                <img src="aliyun/Snipaste_2020-10-19_22-20-58.png" alt="">
+                拷贝
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz conf]# cp * /etc/fdfs
+                </p>
+                可以看到已经被拷贝过来了
+                <img src="aliyun/Snipaste_2020-10-19_22-24-41.png" alt="">
+                <h4 id="修改窗口的配置文件">
+                  <a href="#修改窗口的配置文件" class="heading-link"><i class="fas fa-link"></i></a>5.修改窗口的配置文件</h4>
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz fdfs]# vim tracker.conf
+                </p>
+                更改日志目录
+                <p class="black">base_path=/fastdfs/tracker
+                </p>
+                esc返回，按：wq退出<br>
+                因为之前的目录不存在，需创建一个
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz fdfs]# mkdir /fastdfs/tracker -p
+                </p>
+                -p为递归创建<br>
+                依次创建storage、客户端client、临时tmp文件夹
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz fdfs]# mkdir /fastdfs/storage -p
+                </p>
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz fdfs]# mkdir /fastdfs/client -p
+                </p>
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz fdfs]# mkdir /fastdfs/tmp -p
+                </p>
+                查看已创建的文件夹
+                <img src="aliyun/Snipaste_2020-10-19_22-46-05.png" alt="">
+                重新进入下图所示目录
+                <img src="aliyun/Snipaste_2020-10-19_22-49-18.png" alt="">
+                启动fdfs_trackerd服务
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz bin]# fdfs_trackerd /etc/fdfs/tracker.conf
+                </p>
+                测试是否已启动
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz bin]# fdfs_trackerd /etc/fdfs/tracker.conf restart
+                </p>
+                可以看到停止和启动的过程
+                <img src="aliyun/Snipaste_2020-10-19_22-53-38.png" alt="">
+                <h4 id="修改storage配置文件">
+                  <a href="#修改storage配置文件" class="heading-link"><i class="fas fa-link"></i></a>6.修改storage配置文件</h4>
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz bin]# cd /etc/fdfs
+                </p>
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz fdfs]# vim storage.conf
+                </p>
+                修改日志路径为
+                <p class="black">base_path=/fastdfs/storage
+                </p>
+                groupname
+                <p class="black">base_path=group_name=wdzl
+                </p>
+                <p class="black">store_path0=/fastdfs/storage
+                </p>
+                <p class="black">store_path0=/fastdfs/storage
+                </p>
+                tracker_server改为私网IP
+                <p class="black">tracker_server=172.22.246.0:22122
+                </p>
+                用公网iP需要设置安全组的开放，而私网IP不需要<br>
+                esc ：wq <br>
+                启动服务
+                <img src="aliyun/Snipaste_2020-10-19_23-17-05.png" alt="">
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz bin]# ./fdfs_storaged /etc/fdfs/storage.conf
+                </p>
+                测试是否已启动
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz bin]# ./fdfs_storaged /etc/fdfs/storage.conf restart
+                </p>
+                <img src="aliyun/Snipaste_2020-10-19_23-20-38.png" alt="">
+                查看进程有没有启动
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz bin]# ps aux |grep storage
+                </p>
+                下图说明进程存在
+                <img src="aliyun/Snipaste_2020-10-19_23-23-13.png" alt="">
+                查看窗口进程同理
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz bin]# ps aux |grep tracker
+                </p>
+                <img src="aliyun/Snipaste_2020-10-19_23-25-33.png" alt="">
+                <h4 id="配置客户端client">
+                  <a href="#配置客户端client" class="heading-link"><i class="fas fa-link"></i></a>7.配置客户端client</h4>
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz bin]# cd /etc/fdfs
+                </p>
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz fdfs]# vim client.conf
+                </p>
+                修改日志路径为
+                <p class="black">base_path=/fastdfs/client
+                </p>
+                tracker_server改为私网IP
+                <p class="black">tracker_server=172.22.246.0:22122
+                </p>
+                esc：wq退出
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz fdfs]# cd /usr/bin
+                </p>
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz fdfs]# cd /usr/bin
+                </p>
+                将一张图片用filezilla放在/home/soft目录下
+                <img src="aliyun/Snipaste_2020-10-19_23-43-11.png" alt="">
+                将图片上传到文件服务器
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz bin]# fdfs_test /etc/fdfs/client.conf
+                  upload/home/soft/QQ.jpg</p>
+                得到一个文件服务器的地址，nginx搭建好之后就可以访问了，路径/fastdfs/storage/data/00/00 <br>
+                example file url: http://172.22.246.0/wdzl/M00/00/00/rBb2AF-NtNKAH7voAADmxGD-ZFs748_big.jpg <br>
+                <h4 id="fastdfs-nginx-module">
+                  <a href="#fastdfs-nginx-module" class="heading-link"><i
+                      class="fas fa-link"></i></a>8.fastdfs-nginx-module</h4>
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz ~]# cd /home/soft <br>
+                  [root@izbp184fbrxa15bxowm0tgz soft]# cd fastDFS/ <br>
+                  [root@izbp184fbrxa15bxowm0tgz fastDFS]# cd fastdfs-nginx-module <br>
+                  [root@izbp184fbrxa15bxowm0tgz fastdfs-nginx-module]# cd src <br>
+                  [root@izbp184fbrxa15bxowm0tgz src]# vim config
+                </p>
+                删除所有的local
+                <img src="aliyun/Snipaste_2020-10-20_00-03-02.png" alt="">
+                <h2 id="安装nginx"> <a href="#安装nginx" class="heading-link"><i class="fas fa-link"></i></a>安装nginx</h2>
+                <h4 id="解压"> <a href="#解压" class="heading-link"><i class="fas fa-link"></i></a>1.解压</h4>
+                将安装包上传至/home/soft目录下 <br>
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz ~]# cd /home/soft <br>
+                  [root@izbp184fbrxa15bxowm0tgz soft]# ll <br>
+                  [root@izbp184fbrxa15bxowm0tgz soft]# tar -zxvf nginx-1.12.0.tar.gz
+                </p>
+                <h4 id="代码复制"> <a href="#代码复制" class="heading-link"><i class="fas fa-link"></i></a>2.代码复制</h4>
+                将以下代码复制粘贴到nginx目录下：<br>
+                ./configure \<br>
+                --prefix=/usr/local/nginx \<br>
+                --pid-path=/var/run/nginx/nginx.pid \<br>
+                --lock-path=/var/lock/nginx.lock \<br>
+                --error-log-path=/var/log/nginx/error.log \<br>
+                --http-log-path=/var/log/nginx/access.log \<br>
+                --with-http_gzip_static_module \<br>
+                --http-client-body-temp-path=/var/temp/nginx/client \<br>
+                --http-proxy-temp-path=/var/temp/nginx/proxy \<br>
+                --http-fastcgi-temp-path=/var/temp/nginx/fastcgi \<br>
+                --http-uwsgi-temp-path=/var/temp/nginx/uwsgi \<br>
+                --http-scgi-temp-path=/var/temp/nginx/scgi \<br>
+                --add-module=<span class="red">/home/soft/fastDFS/fastdfs-nginx-module/src</span>
+                <br>
+                红色路径应根据src目录所在位置进行修改
+                <img src="aliyun/Snipaste_2020-10-20_16-05-36.png" alt="">
+                出现下图所示结果说明没有问题了
+                <img src="aliyun/Snipaste_2020-10-20_16-09-17.png" alt="">
+                <h4 id="编译安装"> <a href="#编译安装" class="heading-link"><i class="fas fa-link"></i></a>3.编译安装</h4>
+                编译
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz nginx-1.12.0]# make
+                </p>
+                编译完进行安装，也可以同时进行这两步操作<br>
+                编译完成
+                <img src="aliyun/Snipaste_2020-10-20_16-15-25.png" alt="">
+                安装
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz nginx-1.12.0]# make install
+                </p>
+                安装完成
+                <img src="aliyun/Snipaste_2020-10-20_16-17-41.png" alt="">
+                此时cd /usr/local底下就有了nginx目录
+                <h4 id="拷贝配置文件"> <a href="#拷贝配置文件" class="heading-link"><i class="fas fa-link"></i></a>4.拷贝配置文件</h4>
+                进入待拷贝文件的目标文件夹下
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz local]# cd /home/soft/fastDFS <br>
+                  [root@izbp184fbrxa15bxowm0tgz fastDFS]# cd fastdfs-nginx-module/src
+                </p>
+                拷贝
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz src]# cp mod_fastdfs.conf /etc/fdfs
+                </p>
+                进入目标文件，可以看到已经拷贝成功
+                <img src="aliyun/Snipaste_2020-10-20_16-26-26.png" alt="">
+                <h4 id="修改配置文件"> <a href="#修改配置文件" class="heading-link"><i class="fas fa-link"></i></a>5.修改配置文件</h4>
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz fdfs]# vim mod_fastdfs.conf</p>
+                修改路径自建文件路径，tracker_server改为私网IP
+                <p class="black">base_path=/fastdfs/tmp <br>
+                  tracker_server=172.22.246.0:22122 <br>
+                  group_name=wdzl <br>
+                  url_have_group_name = true <br>
+                  store_path0=/fastdfs/storage
+                </p>
+                esc：wq退出
+                <h4 id="修改nginx配置文件"> <a href="#修改nginx配置文件" class="heading-link"><i
+                      class="fas fa-link"></i></a>6.修改nginx配置文件</h4>
+                进入nginx配置文件目录
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz fdfs]# cd /usr/local/nginx/conf
+                </p>
+                修改下图所示配置文件
+                <img src="aliyun/Snipaste_2020-10-20_16-43-18.png" alt="">
+                命令如下：
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz conf]# vim nginx.conf
+                </p>
+                添加如下命令：
+                <p class="black">server{ <br>
+                  listen 88;<br>
+                  server_name 47.99.84.195;<br>
+                  location /wdzl/M00{<br>
+                  ngx_fastdfs_module;<br>
+                  } <br>
+                  }
+                </p>
+                添加后如下图所示,注意空格：
+                <img src="aliyun/Snipaste_2020-10-20_17-13-13.png" alt="">
+                esc：wq退出<br>
+                测试是否配置成功
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz nginx]# cd /usr/local/nginx/sbin <br>
+                  [root@izbp184fbrxa15bxowm0tgz sbin]# ./nginx -t
+                </p>
+                显示失败
+                <img src="aliyun/Snipaste_2020-10-20_17-14-39.png" alt="">
+                那么就将不存在的目录创建出来
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz sbin]# cd /var <br>
+                  [root@izbp184fbrxa15bxowm0tgz var]# mkdir temp<br>
+                  [root@izbp184fbrxa15bxowm0tgz var]# cd temp<br>
+                  [root@izbp184fbrxa15bxowm0tgz temp]# mkdir nginx<br>
+                  [root@izbp184fbrxa15bxowm0tgz temp]# cd nginx<br>
+                  [root@izbp184fbrxa15bxowm0tgz nginx]# mkdir client<br>
+                  [root@izbp184fbrxa15bxowm0tgz nginx]# cd client<br>
+                  [root@izbp184fbrxa15bxowm0tgz client]# ll<br>
+                  total 0<br>
+                </p>
+                再次测试
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz nginx]# cd /usr/local/nginx/sbin <br>
+                  [root@izbp184fbrxa15bxowm0tgz sbin]# ./nginx -t</p>
+                成功
+                <img src="aliyun/Snipaste_2020-10-20_17-24-28.png" alt="">
+                <h4 id="启动nginx"> <a href="#启动nginx" class="heading-link"><i class="fas fa-link"></i></a>启动nginx</h4>
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz sbin]# ./nginx<br>
+                  ngx_http_fastdfs_set pid=8471
+                </p>启动成功 <br>
+                若安装过程中出现问题，可尝试卸载nginx重装
+                <h4 id="卸载nginx"> <a href="#卸载nginx" class="heading-link"><i class="fas fa-link"></i></a>卸载nginx</h4>
+                （1）首先输入命令 ps -ef | grep nginx检查一下nginx服务是否在运行。
+                <img src="aliyun/Snipaste_2020-10-20_19-24-10.png" alt="">
+                （2）停止Nginx服务
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz bin]# cd /usr/local/nginx/sbin <br>
+                  [root@izbp184fbrxa15bxowm0tgz sbin]# nginx -s stop <br>
+                  [root@izbp184fbrxa15bxowm0tgz sbin]# netstat -lntp <br>
+                </p>
+
+                <h2 id="nginx反向代理tomcat"> <a href="#nginx反向代理tomcat" class="heading-link"><i
+                      class="fas fa-link"></i></a>nginx反向代理tomcat</h2>
+                <h4 id="修改nginx配置文件"> <a href="#修改nginx配置文件" class="heading-link"><i
+                      class="fas fa-link"></i></a>修改nginx配置文件</h4>
+                进入编辑
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz sbin]# cd /usr/local/nginx/conf <br>
+                  [root@izbp184fbrxa15bxowm0tgz conf]# vim nginx.conf
+                </p>
+                修改后的内容如下所示：
+                <img src="aliyun/Snipaste_2020-10-20_18-47-43.png" alt="">
+                esc：wq退出<br>
+                修改nginx端口时改成 8080，8081 什么的都可以，不一定要 81，但是确保 iptable 要放开对该端口的访问。<br>
+
+                注意到 location 的配置：<br>
+
+                root html; #根目录，相对于安装目录 <br>
+                index index.html index.htm; #默认主页<br>
+                默认，你把文件放在安装目录下的 html 文件夹，即可通过 Nginx 访问。<br>
+                <h4 id="重启nginx"> <a href="#重启nginx" class="heading-link"><i class="fas fa-link"></i></a>重启nginx</h4>
+
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz sbin]# ./nginx -s reload <br>
+
+                </p>
+                发现上传html至/var/www/html文件下仍然无法显示出来<br>
+                查找原因，发现没有httpd.conf文件，该文件是控制网页默认放置位置的<br>
+                <h4 id="httpd.conf"> <a href="#httpd.conf" class="heading-link"><i
+                      class="fas fa-link"></i></a>httpd.conf</h4>
+                安装httpd.conf:
+                <p class="black">yum --disableexcludes=all install -y httpd</p>
+                再次查找httpd.conf文件
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz ~]# find / -name httpd.conf <br>
+                  /usr/lib/tmpfiles.d/httpd.conf<br>
+                  /etc/httpd/conf/httpd.conf</p>
+                启动服务并设置为开机自启动
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz ~]# systemctl start httpd <br>
+                  [root@izbp184fbrxa15bxowm0tgz ~]# systemctl enable httpd <br>
+                </p>
+                此时访问IP地址
+                <img src="aliyun/Snipaste_2020-10-21_02-03-22.png" alt="">
+                httpd中网页的默认放置位置为/var/www/html
+                <h4 id="修改网页默认放置位置"> <a href="#修改网页默认放置位置" class="heading-link"><i
+                      class="fas fa-link"></i></a>修改网页默认放置位置</h4>
+                <p class="black">[root@izbp184fbrxa15bxowm0tgz ~]# find / -name httpd.conf <br>
+                  /usr/lib/tmpfiles.d/httpd.conf<br>
+                  /etc/httpd/conf/httpd.conf<br>
+                  [root@izbp184fbrxa15bxowm0tgz ~]# vim /etc/httpd/conf/httpd.conf
+                </p>
+                修改/var/www/html为你想要网页放置的位置即可。
+
+
+
+                <p>参考资料：</p>
+                <ul>
+                  <li><span class="exturl"><a class="exturl__link"
+                        href="https://blog.csdn.net/z_cc_csdn/article/details/78122282" target="_blank"
+                        rel="noopener">CentOS启动nginx出现nginx: [emerg] open() "/var/run/nginx/nginx.pid" failed (2: No
+                        such file or director）</a><span class="exturl__icon"><i
+                          class="fas fa-external-link-alt"></i></span></span></li>
+                  <li><span class="exturl"><a class="exturl__link"
+                        href="https://blog.csdn.net/pengjunlee/article/details/104377198" target="_blank"
+                        rel="noopener">Linux下Tomcat启动正常，但浏览器无法访问Tomcat 8080端口</a><span class="exturl__icon"><i
+                          class="fas fa-external-link-alt"></i></span></span></li>
+
+                </ul>
+              </div>
+              <footer class="post-footer">
+                <div class="post-ending ending">
+                  <div class="ending__text">------ 本文结束，感谢您的阅读 ------</div>
+                </div>
+                <div class="post-copyright copyright">
+                  <div class="copyright-author"><span class="copyright-author__name">本文作者: </span><span
+                      class="copyright-author__value"><a href="http://47.99.84.195/">wuju</a></span></div>
+                  <div class="copyright-link"><span class="copyright-link__name">本文链接: </span><span
+                      class="copyright-link__value"><a href="http://47.99.84.195/">http://47.99.84.195/</a></span>
+
+                  </div>
+                  <div class="copyright-notice"><span class="copyright-notice__name">版权声明: </span><span
+                      class="copyright-notice__value">本博客所有文章除特别声明外，均采用 <a
+                        href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="external nofollow"
+                        target="_blank">BY-NC-SA</a> 许可协议。转载请注明出处！</span></div>
+                </div>
+                <div class="post-tags"><span class="post-tags-item"><span class="post-tags-item__icon"><i
+                        class="fas fa-tag"></i></span><a class="post-tags-item__link"
+                      href="https://liuyib.github.io/tags/Github/">Github</a></span><span class="post-tags-item"><span
+                      class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link"
+                      href="https://liuyib.github.io/tags/Git/">Git</a></span><span class="post-tags-item"><span
+                      class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link"
+                      href="https://liuyib.github.io/tags/Pull-Request/">Pull Request</a></span></div>
+                <div class="post-reward reward">
+                  <div class="reward-button">请我喝杯咖啡~</div>
+                  <div class="reward-qrcode"><span class="reward-qrcode-alipay"><img class="reward-qrcode-alipay__img"
+                        src="static/picture/alipay.png">
+                      <div class="reward-qrcode-alipay__text">支付宝打赏</div>
+                    </span><span class="reward-qrcode-wechat"><img class="reward-qrcode-wechat__img"
+                        src="static/picture/wechat.png">
+                      <div class="reward-qrcode-wechat__text">微信打赏</div>
+                    </span></div>
+                </div>
+                <nav class="post-paginator paginator">
+                  <div class="paginator-next"><a class="paginator-next__link"
+                      href="/2020/04/18/deep-study-ssl-tls/"><span class="paginator-prev__text">深入探究
+                      </span><span class="paginator-next__icon"><i class="fas fa-angle-right"></i></span></a></div>
+                </nav>
+              </footer>
+            </div>
+          </div>
+          <div class="comments" id="comments">
+            <div id="disqus_thread"></div>
+          </div>
+        </div>
+        <div class="sidebar-wrap" id="sidebar-wrap">
+          <aside class="sidebar" id="sidebar">
+            <div class="sidebar-nav"><span class="sidebar-nav-toc current">文章目录</span><span
+                class="sidebar-nav-ov">站点概览</span></div>
+            <section class="sidebar-toc">
+              <li class="toc-item toc-level-2"><a class="toc-link" href="#黑盒测试"><span class="toc-number">一、</span> <span
+                    class="toc-text">
+                    jdk安装、环境变量配置</span></a></li>
+
+              <ol class="toc">
+                <li class="toc-item toc-level-2"><a class="toc-link" href="#卸载jdk"><span class="toc-number">1.</span>
+                    <span class="toc-text">
+                      卸载jdk</span></a>
+
+                </li>
+                <li class="toc-item toc-level-2"><a class="toc-link" href="#安装jdk"><span class="toc-number">2.</span>
+                    <span class="toc-text">
+                      安装jdk</span></a></li>
+              </ol>
+
+              <li class="toc-item toc-level-2"><a class="toc-link" href="#tomcat安装与测试"><span class="toc-number"></span>
+                  二、<span class="toc-text">
+                    tomcat</span></a></li>
+
+              <ol class="toc">
+                <li class="toc-item toc-level-2"><a class="toc-link" href="#安装tomcat"><span class="toc-number">1.</span>
+                    <span class="toc-text">
+                      安装tomcat</span></a></li>
+                <li class="toc-item toc-level-2"><a class="toc-link" href="#卸载tomcat"><span class="toc-number">2.</span>
+                    <span class="toc-text">
+                      卸载tomcat</span></a></li>
+
+              </ol>
+              <li class="toc-item toc-level-2"><a class="toc-link" href="#搭建fastDFS"><span class="toc-number"></span>
+                  三、<span class="toc-text">
+                    搭建fastDFS</span></a></li>
+              <ol class="toc">
+                <li class="toc-item toc-level-2"><a class="toc-link" href="#安装依赖环境"><span class="toc-number">1.</span>
+                    <span class="toc-text">
+                      安装依赖环境</span></a></li>
+                <li class="toc-item toc-level-2"><a class="toc-link" href="#上传压缩包并解压"><span class="toc-number">2.</span>
+                    <span class="toc-text">
+                      上传压缩包并解压</span></a></li>
+                <li class="toc-item toc-level-2"><a class="toc-link" href="#libfastcommon-1.0.7"><span
+                      class="toc-number">3.</span>
+                    <span class="toc-text">
+                      libfastcommon-1.0.7</span></a></li>
+                <li class="toc-item toc-level-2"><a class="toc-link" href="#fastdfs-5.05"><span
+                      class="toc-number">4.</span>
+                    <span class="toc-text">
+                      fastdfs-5.05</span></a></li>
+                <li class="toc-item toc-level-2"><a class="toc-link" href="#修改窗口的配置文件"><span
+                      class="toc-number">5.</span>
+                    <span class="toc-text">
+                      修改窗口的配置文件</span></a></li>
+                <li class="toc-item toc-level-2"><a class="toc-link" href="#修改storage配置文件"><span
+                      class="toc-number">6.</span>
+                    <span class="toc-text">
+                      修改storage配置文件</span></a></li>
+                <li class="toc-item toc-level-2"><a class="toc-link" href="#配置客户端client"><span
+                      class="toc-number">7.</span>
+                    <span class="toc-text">
+                      配置客户端client</span></a></li>
+                <li class="toc-item toc-level-2"><a class="toc-link" href="#fastdfs-nginx-module"><span
+                      class="toc-number">8.</span>
+                    <span class="toc-text">
+                      fastdfs-nginx-module</span></a></li>
+              </ol>
+              <li class="toc-item toc-level-2"><a class="toc-link" href="#安装nginx"><span class="toc-number"></span>
+                  四、<span class="toc-text">
+                    安装nginx</span></a></li>
+              <ol class="toc">
+                <li class="toc-item toc-level-2"><a class="toc-link" href="#解压"><span class="toc-number">1.</span>
+                    <span class="toc-text">
+                      解压</span></a></li>
+                <li class="toc-item toc-level-2"><a class="toc-link" href="#代码复制"><span class="toc-number">2.</span>
+                    <span class="toc-text">
+                      代码复制</span></a></li>
+                <li class="toc-item toc-level-2"><a class="toc-link" href="#编译安装"><span class="toc-number">3.</span>
+                    <span class="toc-text">
+                      编译安装</span></a></li>
+                <li class="toc-item toc-level-2"><a class="toc-link" href="#拷贝配置文件"><span class="toc-number">4.</span>
+                    <span class="toc-text">
+                      拷贝配置文件</span></a></li>
+                <li class="toc-item toc-level-2"><a class="toc-link" href="#修改配置文件"><span class="toc-number">5.</span>
+                    <span class="toc-text">
+                      修改配置文件</span></a></li>
+                <li class="toc-item toc-level-2"><a class="toc-link" href="#修改nginx配置文件"><span
+                      class="toc-number">6.</span>
+                    <span class="toc-text">
+                      修改nginx配置文件</span></a></li>
+                <li class="toc-item toc-level-2"><a class="toc-link" href="#启动nginx"><span class="toc-number">7.</span>
+                    <span class="toc-text">
+                      启动nginx</span></a></li>
+              </ol>
+              <li class="toc-item toc-level-2"><a class="toc-link" href="#nginx反向代理tomcat"><span
+                    class="toc-number"></span> 四、<span class="toc-text">
+                    nginx反向代理tomcat</span></a></li>
+              <ol class="toc">
+                <li class="toc-item toc-level-2"><a class="toc-link" href="#修改nginx配置文件"><span
+                      class="toc-number">1.</span>
+                    <span class="toc-text">
+                      修改nginx配置文件</span></a></li>
+                <li class="toc-item toc-level-2"><a class="toc-link" href="#重启nginx"><span class="toc-number">2.</span>
+                    <span class="toc-text">
+                      重启nginx</span></a></li>
+                <li class="toc-item toc-level-2"><a class="toc-link" href="#httpd.conf"><span
+                      class="toc-number">3.</span>
+                    <span class="toc-text">
+                      httpd.conf</span></a></li>
+              </ol>
+
+
+            </section><!-- ov = overview-->
+            <section class="sidebar-ov hide">
+              <div class="sidebar-ov-author">
+                <div class="sidebar-ov-author__avatar"><img class="sidebar-ov-author__avatar_img" src="firstimg/QQ.jpg"
+                    alt="avatar"></div>
+                <p class="sidebar-ov-author__text">write code and love life</p>
+              </div>
+              <div class="sidebar-ov-social"><a class="sidebar-ov-social-item" href="https://wuju666.github.io"
+                  target="_blank" rel="noopener" data-popover="Github" data-popover-pos="up"><span
+                    class="sidebar-ov-social-item__icon"><i class="fab fa-github"></i></span></a><a
+                  class="sidebar-ov-social-item" href="https://segmentfault.com/u/liuyib/" target="_blank"
+                  rel="noopener" data-popover="思否" data-popover-pos="up"><span
+                    class="sidebar-ov-social-item__icon">SF</span></a><a class="sidebar-ov-social-item"
+                  href="https://www.zhihu.com/people/wo-ai-chi-ju-zi-71/posts" target="_blank" rel="noopener"
+                  data-popover="知乎" data-popover-pos="up"><span class="sidebar-ov-social-item__icon">知乎</span></a><a
+                  class="sidebar-ov-social-item" href="https://juejin.im/user/5ad6b350f265da2397076275/" target="_blank"
+                  rel="noopener" data-popover="掘金" data-popover-pos="up"><span
+                    class="sidebar-ov-social-item__icon">掘金</span></a></div>
+              <div class="sidebar-ov-feed"><span class="sidebar-ov-feed-email"><a class="sidebar-ov-feed-email__link"
+                    href="http://eepurl.com/guAE6j" target="_blank" rel="noopener"><span
+                      class="sidebar-ov-feed-email__icon"><i class="fas fa-envelope"></i></span><span>Email
+                      订阅</span></a></span><span class="sidebar-ov-feed-rss"><a class="sidebar-ov-feed-rss__link"
+                    href="/atom.xml" target="_blank" rel="noopener"><span class="sidebar-ov-feed-rss__icon"><i
+                        class="fas fa-rss"></i></span><span>RSS 订阅</span></a></span></div>
+
+            </section>
+            <div class="sidebar-reading">
+              <div class="sidebar-reading-info"><span class="sidebar-reading-info__text">你已阅读了 </span><span
+                  class="sidebar-reading-info__num">0</span></div>
+              <div class="sidebar-reading-line"></div>
+            </div>
+          </aside>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </main>
+    <footer class="footer" id="footer">
+      <div class="footer-inner">
+        <div><span>Copyright © 2019~2020</span><span class="footer__icon"><i class="fas fa-heart"></i></span><span><a
+              href="https://github.com/liuyib" rel="noopener" target="_blank">wuju</a></span></div>
+
+        <div class="busuanzi"><span class="busuanzi-siteuv"><span class="busuanzi-siteuv__icon"><i
+                class="fas fa-user"></i></span><span class="busuanzi-siteuv__info">访问人数</span><span
+              class="busuanzi-siteuv__value" id="busuanzi_value_site_uv"></span></span><span
+            class="busuanzi-sitepv"><span class="busuanzi-siteuv__icon"><i class="fas fa-eye"></i></span><span
+              class="busuanzi-siteuv__info">浏览总量</span><span class="busuanzi-siteuv__value"
+              id="busuanzi_value_site_pv"></span></span></div>
+
+      </div>
+    </footer>
+    <div class="loading-bar" id="loading-bar">
+      <div class="loading-bar__progress"></div>
+    </div>
+    <div class="back2top" id="back2top"><span class="back2top__icon"><i class="fas fa-rocket"></i></span></div>
+  </div>
+  <div class="search-mask"></div>
+  <div class="search-popup"><span class="search-close"></span>
+    <div class="search-input"><input placeholder="搜索文章（支持多关键词，请用空格分隔）"></div>
+    <div class="search-results"></div>
+  </div>
+  <script src="static/js/jquery.min.js"></script>
+  <script src="static/js/velocity.min.js"></script>
+  <script src="static/js/velocity.ui.min.js"></script>
+  <script src="static/js/ribbon.min.js" size="120" alpha="0.6" zIndex="-1"></script>
+  <script src="static/js/masonry.pkgd.min.js"></script>
+  <script src="static/js/lazyload.min.js"></script>
+  <script>function initSearch() {
+      var isXML = true;
+      var search_path = 'search.json';
+
+      if (!search_path) {
+        search_path = 'search.xml';
+      } else if (/json$/i.test(search_path)) {
+        isXML = false;
+      }
+
+      var path = '/' + search_path;
+      $.ajax({
+        url: path,
+        dataType: isXML ? 'xml' : 'json',
+        async: true,
+        success: function (res) {
+          var datas = isXML ? $('entry', res).map(function () {
+            // 将 XML 转为 JSON
+            return {
+              title: $('title', this).text(),
+              content: $('content', this).text(),
+              url: $('url', this).text()
+            };
+          }).get() : res;
+          var $input = $('.search-input input');
+          var $result = $('.search-results');
+          // 搜索对象（标题、内容）的权重，影响显示顺序
+          var WEIGHT = { title: 100, content: 1 };
+          var searchPost = function () {
+            var searchText = $input.val().toLowerCase().trim();
+            // 根据空白字符分隔关键字
+            var keywords = searchText.split(/[\s]+/);
+            // 搜索结果
+            var matchPosts = [];
+
+            // 有多个关键字时，将原文字整个保存下来
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            // 防止未输入字符时搜索
+            if (searchText.length > 0) {
+              datas.forEach(function (data) {
+                var isMatch = false;
+                // 没有标题的文章使用预设的 i18n 变量代替
+                var title = (data.title && data.title.trim()) || '[ 文章无标题 ]';
+                var titleLower = title && title.toLowerCase();
+                // 删除 HTML 标签 和 所有空白字符
+                var content = data.content && data.content.replace(/<[^>]+>/g, '');
+                var contentLower = content && content.toLowerCase();
+                // 删除重复的 /
+                var postURL = data.url && decodeURI(data.url).replace(/\/{2,}/g, '/');
+                // 标题中匹配到的关键词
+                var titleHitSlice = [];
+                // 内容中匹配到的关键词
+                var contentHitSlice = [];
+
+                keywords.forEach(function (keyword) {
+                  /**
+                  * 获取匹配的关键词的索引
+                  * @param {String} keyword 要匹配的关键字
+                  * @param {String} text 原文字
+                  * @param {Boolean} caseSensitive 是否区分大小写
+                  * @param {Number} weight 匹配对象的权重。权重大的优先显示
+                  * @return {Array}
+                  */
+                  function getIndexByword(word, text, caseSensitive, weight) {
+                    if (!word || !text) {
+                      return [];
+                    };
+
+                    var startIndex = 0; // 每次匹配的开始索引
+                    var index = -1;     // 匹配到的索引值
+                    var result = [];    // 匹配结果
+
+                    if (!caseSensitive) {
+                      word = word.toLowerCase();
+                      text = text.toLowerCase();
+                    }
+
+                    while ((index = text.indexOf(word, startIndex)) !== -1) {
+                      var hasMatch = false;
+                      // 索引位置相同的关键词，保留长度较长的
+                      titleHitSlice.forEach(function (hit) {
+                        if (hit.index === index && hit.word.length < word.length) {
+                          hit.word = word;
+                          hasMatch = true;
+                        }
+                      });
+                      startIndex = index + word.length;
+                      !hasMatch && result.push({ index: index, word: word, weight: weight });
+                    }
+                    return result;
+                  }
+                  titleHitSlice = titleHitSlice.concat(getIndexByword(keyword, titleLower, false, WEIGHT.title));
+                  contentHitSlice = contentHitSlice.concat(getIndexByword(keyword, contentLower, false, WEIGHT.content));
+                });
+
+                var hitTitle = titleHitSlice.length;
+                var hitContent = contentHitSlice.length;
+
+                if (hitTitle > 0 || hitContent > 0) {
+                  isMatch = true;
+                }
+                if (isMatch) {
+                  ;[titleHitSlice, contentHitSlice].forEach(function (hit) {
+                    // 按照匹配文字的索引的递增顺序排序
+                    hit.sort(function (left, right) {
+                      return left.index - right.index;
+                    });
+                  });
+                  /**
+                  * 给文本中匹配到的关键词添加标记，从而进行高亮显示
+                  * @param {String} text 原文本
+                  * @param {Array} hitSlice 匹配项的索引信息
+                  * @param {Number} start 开始索引
+                  * @param {Number} end 结束索引
+                  * @return {String}
+                  */
+                  function highlightKeyword(text, hitSlice, start, end) {
+                    if (!text || !hitSlice || !hitSlice.length) {
+                      return;
+                    }
+
+                    var result = '';
+                    var startIndex = start;
+                    var endIndex = end;
+                    hitSlice.forEach(function (hit) {
+                      if (hit.index < startIndex) {
+                        return;
+                      }
+
+                      var hitWordEnd = hit.index + hit.word.length;
+                      result += text.slice(startIndex, hit.index);
+                      result += '<b>' + text.slice(hit.index, hitWordEnd) + '</b>';
+                      startIndex = hitWordEnd;
+                    });
+                    result += text.slice(startIndex, endIndex);
+                    return result;
+                  }
+
+                  var postData = {};
+                  // 文章总的搜索权重
+                  var postWeight = titleHitSlice.length * WEIGHT.title + contentHitSlice.length * WEIGHT.content;
+                  // 标记匹配关键词后的标题
+                  var postTitle = highlightKeyword(title, titleHitSlice, 0, title.length) || title;
+                  // 标记匹配关键词后的内容
+                  var postContent;
+                  // 显示内容的长度
+                  var SHOW_WORD_LENGTH = 200;
+                  // 命中关键词前的字符显示长度
+                  var SHOW_WORD_FRONT_LENGTH = 20;
+                  var SHOW_WORD_END_LENGTH = SHOW_WORD_LENGTH - SHOW_WORD_FRONT_LENGTH;
+
+                  // 截取匹配的第一个字符，前后共 200 个字符来显示
+                  if (contentHitSlice.length > 0) {
+                    var firstIndex = contentHitSlice[0].index;
+                    var start = firstIndex > SHOW_WORD_FRONT_LENGTH ? firstIndex - SHOW_WORD_FRONT_LENGTH : 0;
+                    var end = firstIndex + SHOW_WORD_END_LENGTH;
+                    postContent = highlightKeyword(content, contentHitSlice, start, end);
+                  } else { // 未匹配到内容，直接截取前 200 个字符来显示
+                    postContent = content.slice(0, SHOW_WORD_LENGTH);
+                  }
+                  postData.title = postTitle;
+                  postData.content = postContent;
+                  postData.url = postURL;
+                  postData.weight = postWeight;
+                  matchPosts.push(postData);
+                }
+              });
+            }
+
+            var resultInnerHtml = '';
+            if (matchPosts.length) {
+              // 按权重递增的顺序排序，使权重大的优先显示
+              matchPosts.sort(function (left, right) {
+                return right.weight - left.weight;
+              });
+              resultInnerHtml += '<ul>';
+              matchPosts.forEach(function (post) {
+                resultInnerHtml += '<li><a class="search-results-title" href="' + post.url + '">';
+                resultInnerHtml += post.title;
+                resultInnerHtml += '</a><div class="search-results-content">';
+                resultInnerHtml += post.content;
+                resultInnerHtml += '</div></li>';
+              });
+              resultInnerHtml += '</ul>';
+            } else {
+              resultInnerHtml += '<div class="search-results-none"><i class="far fa-meh"></i></div>';
+            }
+            $result.html(resultInnerHtml);
+          };
+          $input.on('input', searchPost);
+          $input.on('keyup', function (e) {
+            if (e.keyCode === Stun.utils.codeToKeyCode('Enter')) {
+              searchPost();
+            }
+          });
+        }
+      });
+    }
+
+    function closeSearch() {
+      $('body').css({ overflow: 'auto' });
+      $('.search-popup').css({ display: 'none' });
+      $('.search-mask').css({ display: 'none' });
+    }
+
+    window.addEventListener('DOMContentLoaded', function () {
+      Stun.utils.pjaxReloadLocalSearch = function () {
+        $('.header-nav-search').on('click', function (e) {
+          e.stopPropagation();
+          $('body').css('overflow', 'hidden');
+          $('.search-popup')
+            .velocity('stop')
+            .velocity('transition.expandIn', {
+              duration: 300,
+              complete: function () {
+                $('.search-popup input').focus();
+              }
+            });
+          $('.search-mask')
+            .velocity('stop')
+            .velocity('transition.fadeIn', {
+              duration: 300
+            });
+
+          initSearch();
+        });
+        $('.search-mask, .search-close').on('click', function () {
+          closeSearch();
+        });
+        $(document).on('keydown', function (e) {
+          // Escape <=> 27
+          if (e.keyCode === Stun.utils.codeToKeyCode('Escape')) {
+            closeSearch();
+          }
+        });
+      };
+
+      Stun.utils.pjaxReloadLocalSearch();
+    }, false);</script>
+  <script src="static/js/pjax.min.js"></script>
+  <script>window.addEventListener('DOMContentLoaded', function () {
+      var pjax = new Pjax({ "selectors": ["head title", "#main", ".pjax-reload"], "history": true, "scrollTo": false, "scrollRestoration": false, "cacheBust": false, "debug": false, "currentUrlFullReload": false, "timeout": 0 });
+      // 加载进度条的计时器
+      var loadingTimer = null;
+
+      // 重置页面 Y 方向上的滚动偏移量
+      document.addEventListener('pjax:send', function () {
+        $('.header-nav-menu').removeClass('show');
+        if (CONFIG.pjax && CONFIG.pjax.avoidBanner) {
+          $('html').velocity('scroll', {
+            duration: 500,
+            offset: $('#header').height(),
+            easing: 'easeInOutCubic'
+          });
+        }
+
+        var loadingBarWidth = 20;
+        var MAX_LOADING_WIDTH = 95;
+
+        $('.loading-bar').addClass('loading');
+        $('.loading-bar__progress').css('width', loadingBarWidth + '%');
+        clearInterval(loadingTimer);
+        loadingTimer = setInterval(function () {
+          loadingBarWidth += 3;
+          if (loadingBarWidth > MAX_LOADING_WIDTH) {
+            loadingBarWidth = MAX_LOADING_WIDTH;
+          }
+          $('.loading-bar__progress').css('width', loadingBarWidth + '%');
+        }, 500);
+      }, false);
+
+      window.addEventListener('pjax:complete', function () {
+        clearInterval(loadingTimer);
+        $('.loading-bar__progress').css('width', '100%');
+        $('.loading-bar').removeClass('loading');
+        setTimeout(function () {
+          $('.loading-bar__progress').css('width', '0');
+        }, 400);
+        $('link[rel=prefetch], script[data-pjax-rm]').each(function () {
+          $(this).remove();
+        });
+        $('script[data-pjax], #pjax-reload script').each(function () {
+          $(this).parent().append($(this).remove());
+        });
+
+        if (Stun.utils.pjaxReloadBoot) {
+          Stun.utils.pjaxReloadBoot();
+        }
+        if (Stun.utils.pjaxReloadScroll) {
+          Stun.utils.pjaxReloadScroll();
+        }
+        if (Stun.utils.pjaxReloadSidebar) {
+          Stun.utils.pjaxReloadSidebar();
+        }
+        if (false) {
+          if (Stun.utils.pjaxReloadHeader) {
+            Stun.utils.pjaxReloadHeader();
+          }
+          if (Stun.utils.pjaxReloadScrollIcon) {
+            Stun.utils.pjaxReloadScrollIcon();
+          }
+          if (Stun.utils.pjaxReloadLocalSearch) {
+            Stun.utils.pjaxReloadLocalSearch();
+          }
+        }
+      }, false);
+    }, false);</script>
+  <div id="pjax-reload">
+    <script src="static/js/quicklink.umd.js"></script>
+    <script>function initQuicklink() {
+        quicklink({
+          timeout: '10000',
+          priority: true,
+          ignores: [uri => uri.includes('#'), uri => uri === 'https://liuyib.github.io/2020/09/19/add-commits-to-others-pr/', /\/api\/?/, uri => uri.includes('.xml'), uri => uri.includes('.zip'), (uri, el) => el.hasAttribute('nofollow'), (uri, el) => el.hasAttribute('noprefetch')]
+        });
+      }
+
+      if (true || false) {
+        initQuicklink();
+      } else {
+        window.addEventListener('DOMContentLoaded', initQuicklink, false);
+      }</script>
+    <script src="static/js/bsz.pure.mini.js" async></script>
+  </div>
+  <script data-pjax="">function loadDisqus() {
+      if (!document.getElementById('disqus_thread')) {
+        return;
+      }
+      if (window.DISQUS) {
+        DISQUS.reset({
+          reload: true,
+          config: function () {
+            this.page.url = 'https://liuyib.github.io/2020/09/19/add-commits-to-others-pr/';
+            this.page.identifier = '2020/09/19/add-commits-to-others-pr/';
+            this.page.title = '优雅地修改他人贡献的 Pull Request';
+          }
+        });
+      } else {
+        var d = document;
+        var sc = d.createElement('script');
+        var se = d.createElement('script');
+
+        if (true) {
+          sc.src = 'https://liuyib.disqus.com/count.js';
+          sc.id = 'dsq-count-scr';
+          sc.async = true;
+          if (true) {
+            sc.setAttribute('data-pjax', '');
+          }
+          (d.head || d.body).appendChild(sc);
+        }
+        se.src = 'https://liuyib.disqus.com/embed.js';
+        (d.head || d.body).appendChild(se);
+      }
+    }
+
+    if (true) {
+      loadDisqus();
+    } else {
+      window.addEventListener('DOMContentLoaded', loadDisqus, false);
+    }</script>
+  <script src="static/js/utils.js"></script>
+  <script src="static/js/stun-boot.js"></script>
+  <script src="static/js/scroll.js"></script>
+  <script src="static/js/header.js"></script>
+  <script src="static/js/sidebar.js"></script>
+  <script type="application/json" src="static/js/search.js"></script>
+</body>
+
+</html>
