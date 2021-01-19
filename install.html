@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="manifest" href="/manifest.json?v=2.1.1">
+  <link rel="icon" href="/assets/icons/icon-16x16.png?v=2.1.1" type="image/png" sizes="16x16">
+  <link rel="icon" href="/assets/icons/icon-32x32.png?v=2.1.1" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png?v=2.1.1" sizes="180x180">
+  <link rel="mask-icon" href="/assets/icons/safari-pinned-tab.svg?v=2.1.1" color="#54bcff">
+  <meta name="msapplication-TileImage" content="/assets/icons/icon-144x144.png">
+  <meta name="msapplication-TileColor" content="#000000">
+  <meta name="google-site-verification" content="_dxRdKposlAngL4xRoCTrJu0sZ7Pp_RhlBF9inxcD5w">
+  <meta name="msvalidate.01" content="6A508F795A82FADAC671AFCB9848929F">
+  <meta name="baidu-site-verification" content="UYjZUCoORR">
+  <meta name="360-site-verification" content="b926bfcb0e6034f32ac4700700a812f5">
+  <meta name="sogou_site_verification" content="hbRL4tRKAg">
+  <meta name="description"
+    content="2019 年，我在 Github 上开源了自己的第一个开源项目 hexo-theme-stun，它是一个基于 Hexo 框架的博客主题。值得庆幸的是，在维护期间，有许多 Github 用户为这个项目贡献了 Pull Request。">
+  <meta name="keywords" content="Github,Git,Pull Request">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="优雅地修改他人贡献的 Pull Request">
+  <meta property="og:url" content="https://liuyib.github.io/2020/09/19/add-commits-to-others-pr/">
+  <meta property="og:site_name" content="wuju&#39;s Blog">
+  <meta property="og:description"
+    content="2019 年，我在 Github 上开源了自己的第一个开源项目 hexo-theme-stun，它是一个基于 Hexo 框架的博客主题。值得庆幸的是，在维护期间，有许多 Github 用户为这个项目贡献了 Pull Request。">
+  <meta property="og:locale" content="zh-CN">
+  <meta property="og:image"
+    content="https://liuyib.github.io/assets/posts/add-commits-to-others-pr/pr-meta-info-branch.png">
+  <meta property="og:image"
+    content="https://liuyib.github.io/assets/posts/add-commits-to-others-pr/add-commit-to-others-pr.png">
+  <meta property="og:image"
+    content="https://liuyib.github.io/assets/posts/add-commits-to-others-pr/vscode-built-in-git-ui.png">
+  <meta property="og:image"
+    content="https://liuyib.github.io/assets/posts/add-commits-to-others-pr/vscode-plugins-gitlens-add-remote.png">
+  <meta property="og:image"
+    content="https://liuyib.github.io/assets/posts/add-commits-to-others-pr/vscode-plugins-gitlens-fetch-others.png">
+  <meta property="og:image"
+    content="https://liuyib.github.io/assets/posts/add-commits-to-others-pr/vscode-plugins-gitlens-switch-branch-to-others.png">
+  <meta property="og:image"
+    content="https://liuyib.github.io/assets/posts/add-commits-to-others-pr/vscode-built-in-git-ui-add-commit.png">
+  <meta property="og:image"
+    content="https://liuyib.github.io/assets/posts/add-commits-to-others-pr/vscode-plugins-gitlens-push.png">
+  <meta property="og:image"
+    content="https://liuyib.github.io/assets/posts/add-commits-to-others-pr/github-pr-files-changed-edit-file.png">
+  <meta property="og:updated_time" content="2020-10-04T08:35:34.861Z">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:image"
+    content="https://liuyib.github.io/assets/posts/add-commits-to-others-pr/pr-meta-info-branch.png">
+  <title>软件安装与卸载汇总 | wuju's Blog</title>
+  <link ref="canonical" href="https://liuyib.github.io/2020/09/19/add-commits-to-others-pr/">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml">
+  <link rel="stylesheet" href="static1/css/all.min.css" type="text/css">
+  <link rel="stylesheet" href="static1/css/index.css">
+  <script src="static1/js/adsbygoogle.js" data-ad-client="ca-pub-2577876740331235" async="" data-pjax=""></script>
+  <script src="static/js/791ae5aab4364aa389598c7e63e34664.js" async="" data-pjax=""></script>
+  <script data-pjax="">if (window.location.hostname !== 'localhost') {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'UA-146413033-1');
+    }</script>
+  <script>var _hmt = _hmt || [];
+    (function () {
+      var hm = document.createElement('script');
+      hm.src = 'https://hm.baidu.com/hm.js?2be584e2ddc153d81489b57ba106c8c0';
+      hm.async = true;
+
+      if (true) {
+        hm.setAttribute('data-pjax', '');
+      }
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(hm, s);
+    })();</script>
+  <script>(function () {
+      var hm = document.createElement('script');
+      hm.src = 'https://tajs.qq.com/stats?sId=66465986';
+      hm.async = true;
+
+      if (true) {
+        hm.setAttribute('data-pjax', '');
+      }
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(hm, s);
+    })();</script>
+  <script>var Stun = window.Stun || {};
+    var CONFIG = {
+      root: '/',
+      algolia: undefined,
+      fontIcon: { "prompt": { "success": "fas fa-check-circle", "info": "fas fa-arrow-circle-right", "warning": "fas fa-exclamation-circle", "error": "fas fa-times-circle" }, "copyBtn": "fas fa-copy" },
+      sidebar: { "offsetTop": "20px", "tocMaxDepth": 4 },
+      header: { "enable": true, "showOnPost": true, "scrollDownIcon": true },
+      postWidget: { "endText": true },
+      nightMode: { "enable": true },
+      back2top: { "enable": true },
+      codeblock: { "style": "carbon", "highlight": "light", "wordWrap": false },
+      reward: true,
+      fancybox: false,
+      zoomImage: { "gapAside": "20px" },
+      galleryWaterfall: { "colWidth": "220px", "gapX": "10px" },
+      lazyload: true,
+      pjax: { "avoidBanner": true },
+      externalLink: { "icon": { "enable": true, "name": "fas fa-external-link-alt" } },
+      shortcuts: { "switchPost": true },
+      prompt: { "copyButton": "复制", "copySuccess": "复制成功", "copyError": "复制失败" },
+      sourcePath: { "js": "js", "css": "css", "images": "images" },
+    };
+
+    window.CONFIG = CONFIG;</script>
+    <style>
+    .red{
+      color: red;
+    }
+      </style>
+</head>
+
+<body>
+  <div class="container" id="container">
+    <header class="header" id="header">
+      <div class="header-inner">
+        <nav class="header-nav header-nav--fixed">
+          <div class="header-nav-inner">
+            <div class="header-nav-menubtn"><i class="fas fa-bars"></i></div>
+            <div class="header-nav-menu">
+              <div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="/"><span
+                    class="header-nav-menu-item__icon"><i class="fas fa-home"></i></span><span
+                    class="header-nav-menu-item__text">首页</span></a></div>
+              <div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="javascript:;"
+                  onclick="return false;"><span class="header-nav-menu-item__icon"><i
+                      class="fas fa-feather-alt"></i></span><span class="header-nav-menu-item__text">文章</span></a>
+                <div class="header-nav-submenu">
+                  <div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/archives/"><span
+                        class="header-nav-submenu-item__icon"><i class="fas fa-folder-open"></i></span><span
+                        class="header-nav-submenu-item__text">归档</span></a></div>
+                  <div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link"
+                      href="/categories/"><span class="header-nav-submenu-item__icon"><i
+                          class="fas fa-layer-group"></i></span><span
+                        class="header-nav-submenu-item__text">分类</span></a></div>
+                  <div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/tags/"><span
+                        class="header-nav-submenu-item__icon"><i class="fas fa-tags"></i></span><span
+                        class="header-nav-submenu-item__text">标签</span></a></div>
+                </div>
+              </div>
+              <div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="javascript:;"
+                  onclick="return false;"><span class="header-nav-menu-item__icon"><i
+                      class="fas fa-flask"></i></span><span class="header-nav-menu-item__text">实验室</span></a>
+                <div class="header-nav-submenu">
+                  <div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link"
+                      href="https://github.com/liuyib/hexo-theme-stun" target="_blank" rel="noopener"><span
+                        class="header-nav-submenu-item__text">🦄 Stun</span></a></div>
+                </div>
+              </div>
+              <div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="javascript:;"
+                  onclick="return false;"><span class="header-nav-menu-item__icon"><i
+                      class="fas fa-fingerprint"></i></span><span class="header-nav-menu-item__text">关于</span></a>
+                <div class="header-nav-submenu">
+                  <div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/about/"><span
+                        class="header-nav-submenu-item__icon"><i class="fas fa-user"></i></span><span
+                        class="header-nav-submenu-item__text">作者</span></a></div>
+                  <div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/reprint/"><span
+                        class="header-nav-submenu-item__icon"><i class="fas fa-reply"></i></span><span
+                        class="header-nav-submenu-item__text">转载</span></a></div>
+                </div>
+              </div>
+              <div class="header-nav-menu-item"><a class="header-nav-menu-item__link" href="job.html"
+                  onclick="return false;"><span class="header-nav-menu-item__icon"><i
+                      class="fas fa-angle-double-down"></i></span><span class="header-nav-menu-item__text">其他</span></a>
+                <div class="header-nav-submenu">
+                  <div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/gallery/"><span
+                        class="header-nav-submenu-item__icon"><i class="fas fa-images"></i></span><span
+                        class="header-nav-submenu-item__text">相册</span></a></div>
+                  <div class="header-nav-submenu-item"><a class="header-nav-submenu-item__link" href="/friends/"><span
+                        class="header-nav-submenu-item__icon"><i class="fas fa-hand-spock"></i></span><span
+                        class="header-nav-submenu-item__text">友链</span></a></div>
+                </div>
+              </div>
+            </div>
+            <div class="header-nav-search"><span class="header-nav-search__icon"><i
+                  class="fas fa-search"></i></span><span class="header-nav-search__text">搜索</span></div>
+            <div class="header-nav-mode">
+              <div class="mode">
+                <div class="mode-track"><span class="mode-track-moon"></span><span class="mode-track-sun"></span></div>
+                <div class="mode-thumb"></div>
+              </div>
+            </div>
+          </div>
+        </nav>
+        <div class="header-banner"
+          style="background: url(static/images/add-commits-to-others-pr.png) no-repeat center/cover;">
+          <div class="header-banner-info">
+            <div class="header-banner-info__title">wuju's Blog</div>
+            <div class="header-banner-info__subtitle">write code and love life</div>
+          </div>
+          <div class="header-banner-arrow">
+            <div class="header-banner-arrow__icon"><i class="fas fa-angle-down"></i></div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main class="main" id="main">
+      <div class="main-inner">
+        <div class="content-wrap" id="content-wrap">
+          <div class="content" id="content">
+            <!-- Just used to judge whether it is an article page-->
+            <div id="is-post"></div>
+            <div class="post">
+              <header class="post-header">
+                <h1 class="post-title">软件安装与卸载汇总</h1>
+                <div class="post-meta"><span class="post-meta-item post-meta-item--createtime"><span
+                      class="post-meta-item__icon"><i class="far fa-calendar-plus"></i></span><span
+                      class="post-meta-item__info">发表于</span><span
+                      class="post-meta-item__value">2020-10-15</span></span><span
+                    class="post-meta-item post-meta-item--updatetime"><span class="post-meta-item__icon"><i
+                        class="far fa-calendar-check"></i></span><span class="post-meta-item__info">更新于</span><span
+                      class="post-meta-item__value">2020-10-15</span></span><span
+                    class="post-meta-item post-meta-item--wordcount"><span class="post-meta-item__icon"><i
+                        class="far fa-file-word"></i></span><span class="post-meta-item__info">字数统计</span><span
+                      class="post-meta-item__value">1.6k</span></span><span
+                    class="post-meta-item post-meta-item--readtime"><span class="post-meta-item__icon"><i
+                        class="far fa-clock"></i></span><span class="post-meta-item__info">阅读时长</span><span
+                      class="post-meta-item__value">10分</span></span><span
+                    class="post-meta-item post-meta-item--visitors"><span class="post-meta-item__icon"><i
+                        class="fas fa-eye"></i></span><span class="post-meta-item__info">阅读次数</span><span
+                      class="post-meta-item__value" id="busuanzi_value_page_pv"></span></span></div>
+              </header>
+              <div class="post-body">
+                <p>本文主要记录自己安装一些软件中的步骤与细节，因为时间久了很容易遗忘，虽然现在百度也可以搜索到很详细的资源
+                  ，还是不如自己整理一遍，用到的时候也更便于检索</p>
+
+                <blockquote>
+                  <p>下文将进行详细介绍</p>
+                </blockquote>
+
+                <h2 id="Mysql">
+                  <a href="#Mysql" class="heading-link"><i class="fas fa-link"></i></a>Mysql</h2>
+                  mysql-5.5.62-winx64：<br>
+                  链接：https://pan.baidu.com/s/10485a3lU6sC7kaXRR-oXiA <br>
+提取码：faen
+                  <h4>安装：</h4>
+                  <p>1.关闭无用软件<br>
+                  如360，电脑管家等软件<br>
+                  2.双击打开mysql-5.5.62-winx64
+                  <img src="install/mysql/2018062110300212.png" alt="">
+                  <img src="install/mysql/20180621103015608.png" alt="">
+                  3.选择安装类型，有“Typical（默认）”、“Complete（完全）”、“Custom（用户自定义）”三个选项，
+                  选择“Custom”，按“next”键继续。
+                  <img src="install/mysql/20180621103057986.png" alt="">
+                  4.点选“Browse”，手动指定安装目录。
+                  <img src="install/mysql/20180621103107504.png" alt="">
+                  5.填上安装目录，建议不要放在与操作系统同一分区，这样可以防止系统备份还原的时候，数据被清空。按“OK”继续。
+                  <img src="install/mysql/20180621103120251.png" alt="">
+                  确认一下先前的设置，如果有误，按“Back”返回重做。按“Install”开始安装。
+                  <img src="install/mysql/20180621103129504.png" alt="">
+                  <img src="install/mysql/20180621103138725.png" alt="">
+                  <img src="install/mysql/20180621103144217.png" alt="">
+                  <img src="install/mysql/20180621103159620.png" alt="">
+                  6.正在安装中，请稍候，直到出现下面的界面, 则完成MYSQL的安装
+                  <img src="install/mysql/20180621103216686.png" alt="">
+                  </p>
+                  <h4>配置</h4>
+                  <p>
+                    1.安装完成了，出现如下界面将进入mysql配置向导。
+                    <img src="install/mysql/20180621103227744.png" alt="">
+                    <img src="install/mysql/20180621103243203.png" alt="">
+                    2.选择配置方式，“Detailed Configuration（手动精确配置）”、
+                    “Standard Configuration（标准配置）”，我们选择“Detailed Configuration”，方便熟悉配置过程。 
+                    <img src="install/mysql/20180621103253534.png" alt="">
+                    3.选择服务器类型，“Developer Machine（开发测试类，mysql占用很少资源）”、“Server Machine（服务器类型，mysql占用较多资源）”、
+                    “Dedicated MySQL Server Machine（专门的数据库服务器，mysql占用所有可用资源）”
+                    <img src="install/mysql/20180621103301717.png" alt="">
+                    ４、选择mysql数据库的大致用途，“Multifunctional Database（通用多功能型，好）”、
+                    “Transactional Database Only（服务器类型，专注于事务处理，一般）”、“Non-Transactional Database Only
+                    （非事务处理型，较简单，主要做一些监控、记数用，对MyISAM数据类型的支持仅限于non-transactional），按“Next”继续。
+                    <img src="install/mysql/20180621103311359.png" alt="">
+                    5.选择网站并发连接数，同时连接的数目，“Decision Support(DSS)/OLAP（20个左右）”、
+                    “Online Transaction Processing(OLTP)（500个左右）”、“Manual Setting（手动设置，自己输一个数）”。
+                    <img src="install/mysql/20180621103321623.png" alt="">
+                    <img src="install/mysql/20180621103335579.png" alt="">
+                    6.是否启用TCP/IP连接，设定端口，如果不启用，就只能在自己的机器上访问mysql数据库了，在这个页面上，
+                    您还可以选择“启用标准模式”（Enable Strict Mode），这样MySQL就不会允许细小的语法错误。如果是新手，
+                    建议您取消标准模式以减少麻烦。但熟悉MySQL以后，尽量使用标准模式，因为它可以降低有害数据进入数据库的可能性。按“Next”继续 
+                    <img src="install/mysql/20180621103351719.png" alt="">
+                    7.就是对mysql默认数据库语言编码进行设置（重要），一般选UTF-8，按 “Next”继续。
+                    <img src="install/mysql/20180621103410740.png" alt="">
+                    8.选择是否将mysql安装为windows服务，还可以指定Service Name（服务标识名称），
+                    是否将mysql的bin目录加入到Windows PATH（加入后，就可以直接使用bin下的文件，而不用指出目录名，比如连接，“mysql.exe -uusername -ppassword;”就可以了，
+                    不用指出mysql.exe的完整地址，很方便），我这里全部打上了勾，Service Name不变。按“Next”继续。
+                    <img src="install/mysql/2018062110342022.png" alt="">
+                    9.询问是否要修改默认root用户（超级管理）的密码。“Enable root access from remote machines（是否允许root用户在其它的机器上登陆，
+                    如果要安全，就不要勾上，如果要方便，就勾上它）”。
+                    最后“Create An Anonymous Account（新建一个匿名用户，匿名用户可以连接数据库，不能操作数据，包括查询）”，一般就不用勾了，设置完毕，按“Next”继续。
+                    <img src="install/mysql/20180621103438877.png" alt="">
+                    10.确认设置无误，按“Execute”使设置生效，即完成MYSQL的安装和配置。
+                    <img src="install/mysql/20180621103449342.png" alt="">
+                    <img src="install/mysql/20180621103459677.png" alt="">
+                    <strong>注意：设置完毕，按“Finish”后有一个比较常见的错误，就是不能“Start service”，一般出现在以前有安装mysql的服务器上，
+                    解决的办法，先保证以前安装的mysql服务器彻底卸载掉了；不行的话，检查是否按上面一步所说，之前的密码是否有修改，照上面的操作；
+                    如果依然不行，将mysql安装目录下的data文件夹备份，然后删除，在安装完成后，将安装生成的 data文件夹删除，
+                    备份的data文件夹移回来，再重启mysql服务就可以了，这种情况下，可能需要将数据库检查一下，然后修复一次，防止数据出错。</strong>
+                    <img src="install/mysql/20180621103509567.png" alt="">
+                  </p>
+                  <p>
+                    <strong>
+                    解决方法：<br>
+1, 卸载MySQL<br>
+2, Windows Xp系统删除目录 C:\Documents and Settings\All Users\Application Data\<br>
+windows 7\8\10操作系统删除目录C:\ProgramData\MySQL<br>
+3、重新安装就可以了<br>
+                  </strong>
+                  </p>
+                 
+                  <p class="red"><strong>关键点:如果在最后一步卡死了,等了5分钟左右还是在转圈,只有两个打钩了,这时候就需要启动任务管理器关闭这个进程,
+                  然后在进入到mysql的安装目录,找到这个应用程序,然后右键管理员身份运行,重新配置一下就OK了.</strong></p>
+                  <img src="install/mysql/20180621103720723.png" alt="">
+                  <h4>卸载</h4>
+                  <p>
+                  1.打开控制面板-程序和功能-卸载
+                  <img src="install/mysql/Snipaste_2020-10-15_15-37-32.png" alt="">
+                  <img src="install/mysql/Snipaste_2020-10-15_15-41-04.png" alt="">
+                  2.卸载过后，删除文件夹中的mysql，如删除C:\Program Files (x86)\MySQL该目录下剩余了所有文件，把mysql文件夹也删了
+                  <img src="install/mysql/20190507151307712.png" alt="">
+                  3.删除C盘下的C:\ProgramData\MySQL 所有文件，如果删除不了则用360粉碎掉即可，该programData文件是隐藏的默认，设置显示后即可见
+                  <img src="install/mysql/Snipaste_2020-10-15_15-45-00.png" alt="">
+                  <img src="install/mysql/Snipaste_2020-10-15_15-47-27.png" alt="">
+                  4.windows+R运行“regedit”文件，打开注册表
+                  <img src="install/mysql/Snipaste_2020-10-15_15-49-46.png" alt="">
+                  5.删除注册表：HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\Eventlog\Application\MySQL文件夹
+                  <img src="install/mysql/20170412143143381" alt="">
+                  6.删除HKEY_LOCAL_MACHINE\SYSTEM\ControlSet002\Services\Eventlog\Application\MySQL文件夹，如果没有可以不用删除了。<br>                 
+                  </p>
+                  <p>最好重启下电脑，重新安装就可以了</p>
+                  
+
+
+
+
+
+         
+
+                <p>参考资料：</p>
+                <ul>
+                  <li><span class="exturl"><a class="exturl__link"
+                        href="https://blog.csdn.net/fpga_zy/article/details/80689265" target="_blank"
+                        rel="noopener">https://blog.csdn.net/fpga_zy/article/details/80689265</a><span class="exturl__icon"><i
+                          class="fas fa-external-link-alt"></i></span></span></li>
+                  <li><span class="exturl"><a class="exturl__link"
+                        href="https://blog.csdn.net/weixin_41792162/article/details/89921559"
+                        target="_blank" rel="noopener">https://blog.csdn.net/weixin_41792162/article/details/89921559</a><span class="exturl__icon"><i
+                          class="fas fa-external-link-alt"></i></span></span></li>
+                  <li><span class="exturl"><a class="exturl__link" href="https://www.bilibili.com/video/BV1BC4y1h7nP?from=search&seid=12559333690660025623" target="_blank"
+                        rel="noopener">https://www.bilibili.com/video/BV1BC4y1h7nP?from=search</a><span class="exturl__icon"><i
+                          class="fas fa-external-link-alt"></i></span></span></li>
+                </ul>
+              </div>
+              <footer class="post-footer">
+                <div class="post-ending ending">
+                  <div class="ending__text">------ 本文结束，感谢您的阅读 ------</div>
+                </div>
+                <div class="post-copyright copyright">
+                  <div class="copyright-author"><span class="copyright-author__name">本文作者: </span><span
+                      class="copyright-author__value"><a href="http://47.99.84.195">wuju</a></span></div>
+                  <div class="copyright-link"><span class="copyright-link__name">本文链接: </span><span
+                      class="copyright-link__value"><a
+                        href="http://47.99.84.195">http://47.99.84.195</a></span>
+                  </div>
+                  <div class="copyright-notice"><span class="copyright-notice__name">版权声明: </span><span
+                      class="copyright-notice__value">本博客所有文章除特别声明外，均采用 <a
+                        href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="external nofollow"
+                        target="_blank">BY-NC-SA</a> 许可协议。转载请注明出处！</span></div>
+                </div>
+                <div class="post-tags"><span class="post-tags-item"><span class="post-tags-item__icon"><i
+                        class="fas fa-tag"></i></span><a class="post-tags-item__link"
+                      href="https://github.com/wuju666/wuju666.github.io">Github</a></span><span class="post-tags-item"><span
+                      class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link"
+                      href="https://github.com/wuju666/wuju666.github.io">Git</a></span><span class="post-tags-item"><span
+                      class="post-tags-item__icon"><i class="fas fa-tag"></i></span><a class="post-tags-item__link"
+                      href="https://github.com/wuju666/wuju666.github.io">Pull Request</a></span></div>
+                <div class="post-reward reward">
+                  <div class="reward-button">请我喝杯咖啡~</div>
+                  <div class="reward-qrcode"><span class="reward-qrcode-alipay"><img class="reward-qrcode-alipay__img"
+                        src="static/picture/alipay.png">
+                      <div class="reward-qrcode-alipay__text">支付宝打赏</div>
+                    </span><span class="reward-qrcode-wechat"><img class="reward-qrcode-wechat__img"
+                        src="static/picture/wechat.png">
+                      <div class="reward-qrcode-wechat__text">微信打赏</div>
+                    </span></div>
+                </div>
+                <nav class="post-paginator paginator">
+                  <div class="paginator-next"><a class="paginator-next__link"
+                      href="/2020/04/18/deep-study-ssl-tls/"><span class="paginator-prev__text">深入探究
+                      </span><span class="paginator-next__icon"><i class="fas fa-angle-right"></i></span></a></div>
+                </nav>
+              </footer>
+            </div>
+          </div>
+          <div class="comments" id="comments">
+            <div id="disqus_thread"></div>
+          </div>
+        </div>
+        <div class="sidebar-wrap" id="sidebar-wrap">
+          <aside class="sidebar" id="sidebar">
+            <div class="sidebar-nav"><span class="sidebar-nav-toc current">文章目录</span><span
+                class="sidebar-nav-ov">站点概览</span></div>
+            <section class="sidebar-toc">
+              <li class="toc-item toc-level-2"><a class="toc-link" href="#数据库"><span class="toc-number">一、</span> <span
+                    class="toc-text">
+                    数据库</span></a></li>
+
+              <ol class="toc">
+                <li class="toc-item toc-level-3"><a class="toc-link" href="#Mysql"><span class="toc-number">1.</span>
+                    <span class="toc-text">
+                      Mysql</span></a></li>
+                      
+              </ol>
+            </section><!-- ov = overview-->
+            <section class="sidebar-ov hide">
+              <div class="sidebar-ov-author">
+                <div class="sidebar-ov-author__avatar"><img class="sidebar-ov-author__avatar_img" src="firstimg/QQ.jpg"
+                    alt="avatar"></div>
+                <p class="sidebar-ov-author__text">write code and love life</p>
+              </div>
+              <div class="sidebar-ov-social"><a class="sidebar-ov-social-item" href="https://wuju666.github.io"
+                  target="_blank" rel="noopener" data-popover="Github" data-popover-pos="up"><span
+                    class="sidebar-ov-social-item__icon"><i class="fab fa-github"></i></span></a><a
+                  class="sidebar-ov-social-item" href="https://segmentfault.com/u/liuyib/" target="_blank"
+                  rel="noopener" data-popover="思否" data-popover-pos="up"><span
+                    class="sidebar-ov-social-item__icon">SF</span></a><a class="sidebar-ov-social-item"
+                  href="https://www.zhihu.com/people/wo-ai-chi-ju-zi-71/posts" target="_blank" rel="noopener"
+                  data-popover="知乎" data-popover-pos="up"><span class="sidebar-ov-social-item__icon">知乎</span></a><a
+                  class="sidebar-ov-social-item" href="https://juejin.im/user/5ad6b350f265da2397076275/" target="_blank"
+                  rel="noopener" data-popover="掘金" data-popover-pos="up"><span
+                    class="sidebar-ov-social-item__icon">掘金</span></a></div>
+              <div class="sidebar-ov-feed"><span class="sidebar-ov-feed-email"><a class="sidebar-ov-feed-email__link"
+                    href="http://eepurl.com/guAE6j" target="_blank" rel="noopener"><span
+                      class="sidebar-ov-feed-email__icon"><i class="fas fa-envelope"></i></span><span>Email
+                      订阅</span></a></span><span class="sidebar-ov-feed-rss"><a class="sidebar-ov-feed-rss__link"
+                    href="/atom.xml" target="_blank" rel="noopener"><span class="sidebar-ov-feed-rss__icon"><i
+                        class="fas fa-rss"></i></span><span>RSS 订阅</span></a></span></div>
+
+            </section>
+            <div class="sidebar-reading">
+              <div class="sidebar-reading-info"><span class="sidebar-reading-info__text">你已阅读了 </span><span
+                  class="sidebar-reading-info__num">0</span></div>
+              <div class="sidebar-reading-line"></div>
+            </div>
+          </aside>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </main>
+    <footer class="footer" id="footer">
+      <div class="footer-inner">
+        <div><span>Copyright © 2019~2020</span><span class="footer__icon"><i class="fas fa-heart"></i></span><span><a
+              href="https://github.com/liuyib" rel="noopener" target="_blank">wuju</a></span></div>
+
+        <div class="busuanzi"><span class="busuanzi-siteuv"><span class="busuanzi-siteuv__icon"><i
+                class="fas fa-user"></i></span><span class="busuanzi-siteuv__info">访问人数</span><span
+              class="busuanzi-siteuv__value" id="busuanzi_value_site_uv"></span></span><span
+            class="busuanzi-sitepv"><span class="busuanzi-siteuv__icon"><i class="fas fa-eye"></i></span><span
+              class="busuanzi-siteuv__info">浏览总量</span><span class="busuanzi-siteuv__value"
+              id="busuanzi_value_site_pv"></span></span></div>
+
+      </div>
+    </footer>
+    <div class="loading-bar" id="loading-bar">
+      <div class="loading-bar__progress"></div>
+    </div>
+    <div class="back2top" id="back2top"><span class="back2top__icon"><i class="fas fa-rocket"></i></span></div>
+  </div>
+  <div class="search-mask"></div>
+  <div class="search-popup"><span class="search-close"></span>
+    <div class="search-input"><input placeholder="搜索文章（支持多关键词，请用空格分隔）"></div>
+    <div class="search-results"></div>
+  </div>
+  <script src="static/js/jquery.min.js"></script>
+  <script src="static/js/velocity.min.js"></script>
+  <script src="static/js/velocity.ui.min.js"></script>
+  <script src="static/js/ribbon.min.js" size="120" alpha="0.6" zIndex="-1"></script>
+  <script src="static/js/masonry.pkgd.min.js"></script>
+  <script src="static/js/lazyload.min.js"></script>
+  <script>function initSearch() {
+      var isXML = true;
+      var search_path = 'search.json';
+
+      if (!search_path) {
+        search_path = 'search.xml';
+      } else if (/json$/i.test(search_path)) {
+        isXML = false;
+      }
+
+      var path = '/' + search_path;
+      $.ajax({
+        url: path,
+        dataType: isXML ? 'xml' : 'json',
+        async: true,
+        success: function (res) {
+          var datas = isXML ? $('entry', res).map(function () {
+            // 将 XML 转为 JSON
+            return {
+              title: $('title', this).text(),
+              content: $('content', this).text(),
+              url: $('url', this).text()
+            };
+          }).get() : res;
+          var $input = $('.search-input input');
+          var $result = $('.search-results');
+          // 搜索对象（标题、内容）的权重，影响显示顺序
+          var WEIGHT = { title: 100, content: 1 };
+          var searchPost = function () {
+            var searchText = $input.val().toLowerCase().trim();
+            // 根据空白字符分隔关键字
+            var keywords = searchText.split(/[\s]+/);
+            // 搜索结果
+            var matchPosts = [];
+
+            // 有多个关键字时，将原文字整个保存下来
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            // 防止未输入字符时搜索
+            if (searchText.length > 0) {
+              datas.forEach(function (data) {
+                var isMatch = false;
+                // 没有标题的文章使用预设的 i18n 变量代替
+                var title = (data.title && data.title.trim()) || '[ 文章无标题 ]';
+                var titleLower = title && title.toLowerCase();
+                // 删除 HTML 标签 和 所有空白字符
+                var content = data.content && data.content.replace(/<[^>]+>/g, '');
+                var contentLower = content && content.toLowerCase();
+                // 删除重复的 /
+                var postURL = data.url && decodeURI(data.url).replace(/\/{2,}/g, '/');
+                // 标题中匹配到的关键词
+                var titleHitSlice = [];
+                // 内容中匹配到的关键词
+                var contentHitSlice = [];
+
+                keywords.forEach(function (keyword) {
+                  /**
+                  * 获取匹配的关键词的索引
+                  * @param {String} keyword 要匹配的关键字
+                  * @param {String} text 原文字
+                  * @param {Boolean} caseSensitive 是否区分大小写
+                  * @param {Number} weight 匹配对象的权重。权重大的优先显示
+                  * @return {Array}
+                  */
+                  function getIndexByword(word, text, caseSensitive, weight) {
+                    if (!word || !text) {
+                      return [];
+                    };
+
+                    var startIndex = 0; // 每次匹配的开始索引
+                    var index = -1;     // 匹配到的索引值
+                    var result = [];    // 匹配结果
+
+                    if (!caseSensitive) {
+                      word = word.toLowerCase();
+                      text = text.toLowerCase();
+                    }
+
+                    while ((index = text.indexOf(word, startIndex)) !== -1) {
+                      var hasMatch = false;
+                      // 索引位置相同的关键词，保留长度较长的
+                      titleHitSlice.forEach(function (hit) {
+                        if (hit.index === index && hit.word.length < word.length) {
+                          hit.word = word;
+                          hasMatch = true;
+                        }
+                      });
+                      startIndex = index + word.length;
+                      !hasMatch && result.push({ index: index, word: word, weight: weight });
+                    }
+                    return result;
+                  }
+                  titleHitSlice = titleHitSlice.concat(getIndexByword(keyword, titleLower, false, WEIGHT.title));
+                  contentHitSlice = contentHitSlice.concat(getIndexByword(keyword, contentLower, false, WEIGHT.content));
+                });
+
+                var hitTitle = titleHitSlice.length;
+                var hitContent = contentHitSlice.length;
+
+                if (hitTitle > 0 || hitContent > 0) {
+                  isMatch = true;
+                }
+                if (isMatch) {
+                  ;[titleHitSlice, contentHitSlice].forEach(function (hit) {
+                    // 按照匹配文字的索引的递增顺序排序
+                    hit.sort(function (left, right) {
+                      return left.index - right.index;
+                    });
+                  });
+                  /**
+                  * 给文本中匹配到的关键词添加标记，从而进行高亮显示
+                  * @param {String} text 原文本
+                  * @param {Array} hitSlice 匹配项的索引信息
+                  * @param {Number} start 开始索引
+                  * @param {Number} end 结束索引
+                  * @return {String}
+                  */
+                  function highlightKeyword(text, hitSlice, start, end) {
+                    if (!text || !hitSlice || !hitSlice.length) {
+                      return;
+                    }
+
+                    var result = '';
+                    var startIndex = start;
+                    var endIndex = end;
+                    hitSlice.forEach(function (hit) {
+                      if (hit.index < startIndex) {
+                        return;
+                      }
+
+                      var hitWordEnd = hit.index + hit.word.length;
+                      result += text.slice(startIndex, hit.index);
+                      result += '<b>' + text.slice(hit.index, hitWordEnd) + '</b>';
+                      startIndex = hitWordEnd;
+                    });
+                    result += text.slice(startIndex, endIndex);
+                    return result;
+                  }
+
+                  var postData = {};
+                  // 文章总的搜索权重
+                  var postWeight = titleHitSlice.length * WEIGHT.title + contentHitSlice.length * WEIGHT.content;
+                  // 标记匹配关键词后的标题
+                  var postTitle = highlightKeyword(title, titleHitSlice, 0, title.length) || title;
+                  // 标记匹配关键词后的内容
+                  var postContent;
+                  // 显示内容的长度
+                  var SHOW_WORD_LENGTH = 200;
+                  // 命中关键词前的字符显示长度
+                  var SHOW_WORD_FRONT_LENGTH = 20;
+                  var SHOW_WORD_END_LENGTH = SHOW_WORD_LENGTH - SHOW_WORD_FRONT_LENGTH;
+
+                  // 截取匹配的第一个字符，前后共 200 个字符来显示
+                  if (contentHitSlice.length > 0) {
+                    var firstIndex = contentHitSlice[0].index;
+                    var start = firstIndex > SHOW_WORD_FRONT_LENGTH ? firstIndex - SHOW_WORD_FRONT_LENGTH : 0;
+                    var end = firstIndex + SHOW_WORD_END_LENGTH;
+                    postContent = highlightKeyword(content, contentHitSlice, start, end);
+                  } else { // 未匹配到内容，直接截取前 200 个字符来显示
+                    postContent = content.slice(0, SHOW_WORD_LENGTH);
+                  }
+                  postData.title = postTitle;
+                  postData.content = postContent;
+                  postData.url = postURL;
+                  postData.weight = postWeight;
+                  matchPosts.push(postData);
+                }
+              });
+            }
+
+            var resultInnerHtml = '';
+            if (matchPosts.length) {
+              // 按权重递增的顺序排序，使权重大的优先显示
+              matchPosts.sort(function (left, right) {
+                return right.weight - left.weight;
+              });
+              resultInnerHtml += '<ul>';
+              matchPosts.forEach(function (post) {
+                resultInnerHtml += '<li><a class="search-results-title" href="' + post.url + '">';
+                resultInnerHtml += post.title;
+                resultInnerHtml += '</a><div class="search-results-content">';
+                resultInnerHtml += post.content;
+                resultInnerHtml += '</div></li>';
+              });
+              resultInnerHtml += '</ul>';
+            } else {
+              resultInnerHtml += '<div class="search-results-none"><i class="far fa-meh"></i></div>';
+            }
+            $result.html(resultInnerHtml);
+          };
+          $input.on('input', searchPost);
+          $input.on('keyup', function (e) {
+            if (e.keyCode === Stun.utils.codeToKeyCode('Enter')) {
+              searchPost();
+            }
+          });
+        }
+      });
+    }
+
+    function closeSearch() {
+      $('body').css({ overflow: 'auto' });
+      $('.search-popup').css({ display: 'none' });
+      $('.search-mask').css({ display: 'none' });
+    }
+
+    window.addEventListener('DOMContentLoaded', function () {
+      Stun.utils.pjaxReloadLocalSearch = function () {
+        $('.header-nav-search').on('click', function (e) {
+          e.stopPropagation();
+          $('body').css('overflow', 'hidden');
+          $('.search-popup')
+            .velocity('stop')
+            .velocity('transition.expandIn', {
+              duration: 300,
+              complete: function () {
+                $('.search-popup input').focus();
+              }
+            });
+          $('.search-mask')
+            .velocity('stop')
+            .velocity('transition.fadeIn', {
+              duration: 300
+            });
+
+          initSearch();
+        });
+        $('.search-mask, .search-close').on('click', function () {
+          closeSearch();
+        });
+        $(document).on('keydown', function (e) {
+          // Escape <=> 27
+          if (e.keyCode === Stun.utils.codeToKeyCode('Escape')) {
+            closeSearch();
+          }
+        });
+      };
+
+      Stun.utils.pjaxReloadLocalSearch();
+    }, false);</script>
+  <script src="static/js/pjax.min.js"></script>
+  <script>window.addEventListener('DOMContentLoaded', function () {
+      var pjax = new Pjax({ "selectors": ["head title", "#main", ".pjax-reload"], "history": true, "scrollTo": false, "scrollRestoration": false, "cacheBust": false, "debug": false, "currentUrlFullReload": false, "timeout": 0 });
+      // 加载进度条的计时器
+      var loadingTimer = null;
+
+      // 重置页面 Y 方向上的滚动偏移量
+      document.addEventListener('pjax:send', function () {
+        $('.header-nav-menu').removeClass('show');
+        if (CONFIG.pjax && CONFIG.pjax.avoidBanner) {
+          $('html').velocity('scroll', {
+            duration: 500,
+            offset: $('#header').height(),
+            easing: 'easeInOutCubic'
+          });
+        }
+
+        var loadingBarWidth = 20;
+        var MAX_LOADING_WIDTH = 95;
+
+        $('.loading-bar').addClass('loading');
+        $('.loading-bar__progress').css('width', loadingBarWidth + '%');
+        clearInterval(loadingTimer);
+        loadingTimer = setInterval(function () {
+          loadingBarWidth += 3;
+          if (loadingBarWidth > MAX_LOADING_WIDTH) {
+            loadingBarWidth = MAX_LOADING_WIDTH;
+          }
+          $('.loading-bar__progress').css('width', loadingBarWidth + '%');
+        }, 500);
+      }, false);
+
+      window.addEventListener('pjax:complete', function () {
+        clearInterval(loadingTimer);
+        $('.loading-bar__progress').css('width', '100%');
+        $('.loading-bar').removeClass('loading');
+        setTimeout(function () {
+          $('.loading-bar__progress').css('width', '0');
+        }, 400);
+        $('link[rel=prefetch], script[data-pjax-rm]').each(function () {
+          $(this).remove();
+        });
+        $('script[data-pjax], #pjax-reload script').each(function () {
+          $(this).parent().append($(this).remove());
+        });
+
+        if (Stun.utils.pjaxReloadBoot) {
+          Stun.utils.pjaxReloadBoot();
+        }
+        if (Stun.utils.pjaxReloadScroll) {
+          Stun.utils.pjaxReloadScroll();
+        }
+        if (Stun.utils.pjaxReloadSidebar) {
+          Stun.utils.pjaxReloadSidebar();
+        }
+        if (false) {
+          if (Stun.utils.pjaxReloadHeader) {
+            Stun.utils.pjaxReloadHeader();
+          }
+          if (Stun.utils.pjaxReloadScrollIcon) {
+            Stun.utils.pjaxReloadScrollIcon();
+          }
+          if (Stun.utils.pjaxReloadLocalSearch) {
+            Stun.utils.pjaxReloadLocalSearch();
+          }
+        }
+      }, false);
+    }, false);</script>
+  <div id="pjax-reload">
+    <script src="static/js/quicklink.umd.js"></script>
+    <script>function initQuicklink() {
+        quicklink({
+          timeout: '10000',
+          priority: true,
+          ignores: [uri => uri.includes('#'), uri => uri === 'https://liuyib.github.io/2020/09/19/add-commits-to-others-pr/', /\/api\/?/, uri => uri.includes('.xml'), uri => uri.includes('.zip'), (uri, el) => el.hasAttribute('nofollow'), (uri, el) => el.hasAttribute('noprefetch')]
+        });
+      }
+
+      if (true || false) {
+        initQuicklink();
+      } else {
+        window.addEventListener('DOMContentLoaded', initQuicklink, false);
+      }</script>
+    <script src="static/js/bsz.pure.mini.js" async></script>
+  </div>
+  <script data-pjax="">function loadDisqus() {
+      if (!document.getElementById('disqus_thread')) {
+        return;
+      }
+      if (window.DISQUS) {
+        DISQUS.reset({
+          reload: true,
+          config: function () {
+            this.page.url = 'https://liuyib.github.io/2020/09/19/add-commits-to-others-pr/';
+            this.page.identifier = '2020/09/19/add-commits-to-others-pr/';
+            this.page.title = '优雅地修改他人贡献的 Pull Request';
+          }
+        });
+      } else {
+        var d = document;
+        var sc = d.createElement('script');
+        var se = d.createElement('script');
+
+        if (true) {
+          sc.src = 'https://liuyib.disqus.com/count.js';
+          sc.id = 'dsq-count-scr';
+          sc.async = true;
+          if (true) {
+            sc.setAttribute('data-pjax', '');
+          }
+          (d.head || d.body).appendChild(sc);
+        }
+        se.src = 'https://liuyib.disqus.com/embed.js';
+        (d.head || d.body).appendChild(se);
+      }
+    }
+
+    if (true) {
+      loadDisqus();
+    } else {
+      window.addEventListener('DOMContentLoaded', loadDisqus, false);
+    }</script>
+  <script src="static/js/utils.js"></script>
+  <script src="static/js/stun-boot.js"></script>
+  <script src="static/js/scroll.js"></script>
+  <script src="static/js/header.js"></script>
+  <script src="static/js/sidebar.js"></script>
+  <script type="application/json" src="static/js/search.js"></script>
+</body>
+
+</html>
